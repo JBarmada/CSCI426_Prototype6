@@ -4,12 +4,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
 
-
-
-    
-
     private Rigidbody2D rb;
     private Vector2 movement;
+    public BuoyancyEffector2D ocean;
     
 
 
@@ -21,10 +18,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-
+        if (movement.x < 0){
+            ocean.flowMagnitude = -60;
+        }
+        else if(movement.x > 0){
+            ocean.flowMagnitude = 60;
+        }
+        
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement.Normalize();
+        
 
 
     }
