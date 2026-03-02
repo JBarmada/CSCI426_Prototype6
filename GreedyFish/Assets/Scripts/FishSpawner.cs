@@ -5,37 +5,31 @@ using System.Collections;
 
 public class FishSpawner : MonoBehaviour
 {
+    public Transform[] spawnPoints;
+    public GameObject[] projectilePrefabs;
 
+    [SerializeField] private float spawnInterval = 1.0f;
+    [Tooltip("Number of fish to spawn per group")]
+    [SerializeField] private int groupSize = 1;
 
-   public Transform[] spawnPoints;
-    public GameObject [] projectilePrefabs;
-   // private float spawnInterval = 1.0f;
     void Start()
     {
-        int randProj = Random.Range(0, projectilePrefabs.Length);
-        int randSpawPoint = Random.Range(0, spawnPoints.Length);
-        
-            Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
-        
-      // StartCoroutine(spawnProj(spawnInterval));
+        StartCoroutine(SpawnProj());
+    }
+
+    private IEnumerator SpawnProj()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnInterval);
+
+            for (int i = 0; i < groupSize; i++)
+            {
+                int randProj = Random.Range(0, projectilePrefabs.Length);
+                int randSpawPoint = Random.Range(0, spawnPoints.Length);
+                Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
+            }
         }
-
-    /*private IEnumerator spawnProj(float interval)
-    {
-        yield return new WaitForSeconds(interval);
-       
-        StartCoroutine(spawnProj(spawnInterval));
-        
-    }*/
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        
-            
-        
     }
 }
 

@@ -64,6 +64,7 @@ public class GameManager : MonoBehaviour
         TimeRemaining = gameDuration;
         PlayerSurvived = false;
         OnScoreChanged?.Invoke(CurrentScore);
+        OnTimerTick?.Invoke(TimeRemaining);
         SetState(GameState.Playing);
     }
 

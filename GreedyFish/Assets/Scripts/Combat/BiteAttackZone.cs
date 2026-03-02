@@ -70,6 +70,7 @@ public class BiteAttackZone : MonoBehaviour
         // drift-safe even if BiteZone's own position was accidentally mutated.
         Transform playerTransform = transform.parent != null ? transform.parent : transform;
         Vector2 worldCenter = (Vector2)playerTransform.position + GetWorldOffset();
+        Vector2 visualOffset = GetWorldOffset();
 
         // Position visuals using localPosition (relative to BiteZone) instead of world
         // position. BiteZone inherits Player scale, so localPos = (offset.x, offset.y)
@@ -77,14 +78,14 @@ public class BiteAttackZone : MonoBehaviour
         if (zoneIndicator != null)
         {
             zoneIndicator.transform.localPosition = new Vector3(
-                offset.x, offset.y, zoneIndicator.transform.localPosition.z);
+                visualOffset.x, visualOffset.y, zoneIndicator.transform.localPosition.z);
             zoneIndicator.enabled = true;
         }
 
         if (hitEffect != null)
         {
             hitEffect.transform.localPosition = new Vector3(
-                offset.x, offset.y, hitEffect.transform.localPosition.z);
+                visualOffset.x, visualOffset.y, hitEffect.transform.localPosition.z);
             hitEffect.Play();
         }
 
