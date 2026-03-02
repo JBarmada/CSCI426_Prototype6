@@ -2,55 +2,70 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    private int health;
+    private BiteAttackZone    _biteZone;
+    private SpecialAttackZone _specialZone;
 
     private void Start()
     {
-        health = 100;
+        _biteZone    = GetComponentInChildren<BiteAttackZone>(true);
+        _specialZone = GetComponentInChildren<SpecialAttackZone>(true);
     }
 
     private void Update()
     {
+        if (GameManager.Instance?.CurrentState != GameState.Playing) return;
+
+        // Space bar fires the special attack of the currently selected type.
+        if (Input.GetKeyDown(KeyCode.Space))
+            TryFireSpecial();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (GameManager.Instance?.CurrentState != GameState.Playing) return;
+
         GameObject other = collision.gameObject;
 
-        // Determine which attack type corresponds to this enemy tag.
         AttackType? enemyAttackType = GetEnemyAttackType(other.tag);
         if (enemyAttackType == null)
             return;
 
-        // Execute the currently selected attack and apply damage to the enemy.
-        int damage = 0;
-        if (AttackSystem.Instance != null)
-            damage = AttackSystem.Instance.ExecuteAttack();
-
-        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-        if (enemy == null)
+        AttackData selected = AttackSystem.Instance?.SelectedAttack;
+        if (selected == null)
             return;
 
-        enemy.TakeDamage(damage);
-
-        // If the enemy died, roll meat and register with the upgrade system.
-        if (enemy.IsDead)
+        if (selected.type == AttackType.Bite)
         {
-            int meatCount = AttackSystem.Instance != null
-                ? AttackSystem.Instance.RollMeatDrop()
-                : 1;
+            // Bite: AOE zone handles damage and meat registration for all enemies in range.
+            _biteZone?.Activate();
+        }
+        else
+        {
+            // All other attacks: single-target direct hit.
+            int damage = AttackSystem.Instance?.ExecuteAttack() ?? 0;
 
-            AttackUpgradeSystem.Instance?.RegisterMeat(enemyAttackType.Value, meatCount);
+            EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+            if (enemy == null)
+                return;
+
+            enemy.TakeDamage(damage);
+
+            if (enemy.IsDead)
+            {
+                int meatCount = AttackSystem.Instance?.RollMeatDrop() ?? 1;
+                AttackUpgradeSystem.Instance?.RegisterMeat(enemyAttackType.Value, meatCount);
+            }
         }
     }
 
-    // ── Internal ──────────────────────────────────────────────────────────────
+    // ── Public utility ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Maps each enemy tag to the attack type that gains experience from killing it.
-    /// Returns null when the collider is not a recognised enemy.
+    /// Public so BiteAttackZone and SpecialAttackZone can register meat on AOE kills.
+    /// Returns null when the tag is not a recognised enemy.
     /// </summary>
-    private static AttackType? GetEnemyAttackType(string tag)
+    public static AttackType? GetEnemyAttackType(string tag)
     {
         switch (tag)
         {
@@ -60,5 +75,34 @@ public class PlayerScript : MonoBehaviour
             case "UglyFish":     return AttackType.Poison;
             default:             return null;
         }
+    }
+
+    // ── Internal ──────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Activates the 360° special zone if the currently selected attack's special is
+    /// unlocked and off cooldown. Starts the cooldown timer on success.
+    /// </summary>
+    private void TryFireSpecial()
+    {
+        if (AttackSystem.Instance == null || _specialZone == null) return;
+
+        AttackData selected = AttackSystem.Instance.SelectedAttack;
+        if (selected == null) return;
+
+        if (!selected.specialUnlocked)
+        {
+            Debug.Log($"[PlayerScript] Special not yet unlocked for {selected.type}.");
+            return;
+        }
+
+        if (selected.specialCooldownRemaining > 0f)
+        {
+            Debug.Log($"[PlayerScript] Special on cooldown: {selected.specialCooldownRemaining:F1}s remaining.");
+            return;
+        }
+
+        _specialZone.Activate();
+        selected.specialCooldownRemaining = selected.specialMoveCooldown;
     }
 }

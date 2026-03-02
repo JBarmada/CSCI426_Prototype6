@@ -1,5 +1,55 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3671425637370798340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1277579389802063541}
+  - component: {fileID: 823920108532597009}
+  m_Layer: 0
+  m_Name: HealthBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1277579389802063541
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671425637370798340}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.423, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3121204307811341369}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &823920108532597009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3671425637370798340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28654990b11163f4bb55c1e4c81a0f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarUI
+  barWidth: 0.25
+  barHeight: 0.04
+  yOffset: 0.2
+  fullColor: {r: 0.18, g: 0.8, b: 0.18, a: 1}
+  emptyColor: {r: 0.9, g: 0.1, b: 0.1, a: 1}
+  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
 --- !u!1 &7667195302298029074
 GameObject:
   m_ObjectHideFlags: 0
@@ -14,6 +64,7 @@ GameObject:
   - component: {fileID: 6878788480146656993}
   - component: {fileID: 5131503107957985944}
   - component: {fileID: 586576939831694826}
+  - component: {fileID: 5796383788275576411}
   m_Layer: 5
   m_Name: JawFish
   m_TagString: JawFish
@@ -33,7 +84,8 @@ Transform:
   m_LocalPosition: {x: -0.7536, y: 0.4449, z: 0}
   m_LocalScale: {x: 4.65367, y: 4.65367, z: 4.65367}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1277579389802063541}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2808117758921346280
@@ -180,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec1e8096f1d03bd47b862b2208272f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 30
+  maxHealth: 35
 --- !u!114 &586576939831694826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,3 +248,17 @@ MonoBehaviour:
   player: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
   speed: 2
   distance: 1
+--- !u!114 &5796383788275576411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667195302298029074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0055d57127501a74080d99f7bb78a612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDamageDealer
+  damagePerHit: 15
+  hitCooldown: 0.5

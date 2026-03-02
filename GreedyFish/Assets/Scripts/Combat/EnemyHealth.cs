@@ -1,36 +1,36 @@
+using System;
 using UnityEngine;
 
 /// <summary>
-/// Stub component to be attached to every enemy GameObject.
-/// Tracks hit points and exposes TakeDamage / IsDead for the attack system.
-/// Expand with animations, drops, and pooling in a future pass.
+/// Attached to every enemy. Tracks HP and fires OnHealthChanged so health bars can react.
 /// </summary>
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHealth = 20;
 
+    public int MaxHealth     => maxHealth;
     public int CurrentHealth { get; private set; }
 
     /// <summary>True once the enemy's HP reaches zero.</summary>
     public bool IsDead => CurrentHealth <= 0;
+
+    /// <summary>Fired whenever HP changes. (currentHP, maxHP)</summary>
+    public event Action<int, int> OnHealthChanged;
 
     private void Awake()
     {
         CurrentHealth = maxHealth;
     }
 
-    /// <summary>Reduces the enemy's HP by <paramref name="amount"/>. Destroys the GameObject on death.</summary>
+    /// <summary>Reduces HP by <paramref name="amount"/>. Destroys the GameObject on death.</summary>
     public void TakeDamage(int amount)
     {
         if (IsDead) return;
 
-        CurrentHealth -= amount;
-        Debug.Log($"[EnemyHealth] {gameObject.name} took {amount} damage → {CurrentHealth} HP");
+        CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
+        OnHealthChanged?.Invoke(CurrentHealth, maxHealth);
 
         if (IsDead)
-        {
-            Debug.Log($"[EnemyHealth] {gameObject.name} died.");
             Destroy(gameObject);
-        }
     }
 }

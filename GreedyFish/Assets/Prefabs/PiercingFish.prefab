@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7852119774244992951}
   - component: {fileID: 8096897192059233909}
   - component: {fileID: -7229524076091033202}
+  - component: {fileID: 5084113281490282300}
   m_Layer: 5
   m_Name: PiercingFish
   m_TagString: PiercingFish
@@ -33,7 +34,8 @@ Transform:
   m_LocalPosition: {x: -0.5069, y: 3.0435, z: 0}
   m_LocalScale: {x: 6.9643435, y: 6.9643435, z: 6.9643435}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4706469493114771712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5195529713041898494
@@ -196,3 +198,67 @@ MonoBehaviour:
   player: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
   speed: 2
   distance: 1
+--- !u!114 &5084113281490282300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980948495195129380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0055d57127501a74080d99f7bb78a612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDamageDealer
+  damagePerHit: 8
+  hitCooldown: 0.5
+--- !u!1 &8466225025280361299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4706469493114771712}
+  - component: {fileID: 7943231392326287634}
+  m_Layer: 0
+  m_Name: HealthBar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4706469493114771712
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8466225025280361299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.21, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4209617111810123486}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7943231392326287634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8466225025280361299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28654990b11163f4bb55c1e4c81a0f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarUI
+  barWidth: 0.25
+  barHeight: 0.03
+  yOffset: 0.1
+  fullColor: {r: 0.18, g: 0.8, b: 0.18, a: 1}
+  emptyColor: {r: 0.9, g: 0.1, b: 0.1, a: 1}
+  backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
