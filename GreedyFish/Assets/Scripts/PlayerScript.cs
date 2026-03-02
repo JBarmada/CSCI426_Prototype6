@@ -1,5 +1,4 @@
-    using System.Collections;
-using UnityEditor;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -19,29 +18,29 @@ public class PlayerScript : MonoBehaviour
 
     }
     
-    public void OnCollision2DEnter(Collider2D other)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         health -= 5;
         Debug.Log("Health " + health);
-        if (other.CompareTag("PiercingFish"))
+        if (collision.gameObject.CompareTag("PiercingFish"))
         {
             health -= 5;
             Debug.Log("Health " + health);
 
         }
-        else if (other.CompareTag("JawFish"))
+        else if (collision.gameObject.CompareTag("JawFish"))
         {
             health -= 20;
             Debug.Log(health);
 
         }
-        else if (other.CompareTag("EelFish"))
+        else if (collision.gameObject.CompareTag("EelFish"))
         {
             health -= 10;
             Debug.Log(health);
 
         }
-        else if (other.CompareTag("UglyFish"))
+        else if (collision.gameObject.CompareTag("UglyFish"))
         {
             Poison();
 

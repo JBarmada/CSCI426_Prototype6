@@ -583,7 +583,8 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: APP_UI_EDITOR_ONLY
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -682,11 +683,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 90792de2-5833-4fb8-b5b5-432f67aa77e5
+  cloudProjectId: 40eb8e84-15d9-4592-ab4d-5910f63d20f7
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: GreedyFish
-  organizationId: xcamacho
+  organizationId: barmada_unity
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
