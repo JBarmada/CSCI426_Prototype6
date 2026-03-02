@@ -1,26 +1,27 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
 /// Controls visibility of Start, Pause, and End menu panels.
-/// Listens to GameManager state changes and handles keyboard shortcuts.
+/// All UI references are re-discovered after every scene load so that
+/// DontDestroyOnLoad cross-scene reference staleness is never an issue.
+/// Panels are found via Transform.Find on UICanvas (works for inactive objects).
+/// Buttons are wired with AddListener in code — not via serialized persistent calls.
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
-    [Header("Panels")]
-    [SerializeField] private GameObject startMenuPanel;
-    [SerializeField] private GameObject pauseMenuPanel;
-    [SerializeField] private GameObject endMenuPanel;
-
-    [Header("Start Menu")]
-    [SerializeField] private TextMeshProUGUI highScoresText;
-    [SerializeField] private TextMeshProUGUI controlsText;
-
-    [Header("End Menu")]
-    [SerializeField] private TextMeshProUGUI finalScoreText;
-    [SerializeField] private TextMeshProUGUI resultText;
+    // Re-discovered after every scene load — never serialized.
+    private GameObject startMenuPanel;
+    private GameObject pauseMenuPanel;
+    private GameObject endMenuPanel;
+    private TextMeshProUGUI highScoresText;
+    private TextMeshProUGUI controlsText;
+    private TextMeshProUGUI finalScoreText;
+    private TextMeshProUGUI resultText;
 
     private const string ControlsContent =
         "Move:  WASD / Arrow Keys\n" +
@@ -28,26 +29,91 @@ public class MenuManager : MonoBehaviour
         "Pause:  Escape\n" +
         "Reset:  R";
 
+    private void Awake()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
     private void Start()
     {
-        if (controlsText != null)
-            controlsText.text = ControlsContent;
+        // Initial scene load: sceneLoaded doesn't fire for the first load,
+        // so we connect manually here.
+        FindAndConnectUI();
 
         if (GameManager.Instance == null)
             return;
 
-        // Subscribe here — Start is guaranteed to run after every Awake in the scene,
-        // so GameManager.Instance is always set. OnEnable fires too early to be safe.
         GameManager.Instance.OnStateChanged += HandleStateChanged;
-
-        // Sync panels with whatever state the GameManager is already in.
         HandleStateChanged(GameManager.Instance.CurrentState);
-    }   
+    }
 
     private void OnDestroy()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
         if (GameManager.Instance != null)
             GameManager.Instance.OnStateChanged -= HandleStateChanged;
+    }
+
+    // ── Scene reload ──────────────────────────────────────────────────────────
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // On scene reload, Unity creates a new Managers object from the scene file.
+        // GameManager.Awake immediately destroys it (singleton guard), but before that
+        // happens its MenuManager.Awake also subscribes to sceneLoaded, so this fires
+        // twice. Skip the call from the duplicate — only the persistent instance acts.
+        if (GameManager.Instance == null || gameObject != GameManager.Instance.gameObject)
+            return;
+
+        FindAndConnectUI();
+
+        HandleStateChanged(GameManager.Instance.CurrentState);
+    }
+
+    /// <summary>
+    /// Locates UICanvas in the active scene, then uses Transform.Find to reach
+    /// all panels — including inactive ones that GameObject.Find would miss.
+    /// Buttons are wired with AddListener so no serialized persistent call is needed.
+    /// </summary>
+    private void FindAndConnectUI()
+    {
+        GameObject canvas = GameObject.Find("UICanvas");
+        if (canvas == null)
+        {
+            Debug.LogWarning("[MenuManager] UICanvas not found in scene.");
+            return;
+        }
+
+        Transform ct = canvas.transform;
+        startMenuPanel = ct.Find("StartMenuPanel")?.gameObject;
+        pauseMenuPanel = ct.Find("PauseMenuPanel")?.gameObject;
+        endMenuPanel   = ct.Find("EndMenuPanel")?.gameObject;
+
+        if (startMenuPanel != null)
+        {
+            highScoresText = FindText(startMenuPanel, "HighScoresText");
+            controlsText   = FindText(startMenuPanel, "ControlsText");
+            if (controlsText != null) controlsText.text = ControlsContent;
+            RefreshHighScores();
+            WireButton(startMenuPanel, "StartButton", OnStartPressed);
+            WireButton(startMenuPanel, "QuitButton",  OnQuitPressed);
+        }
+
+        if (pauseMenuPanel != null)
+        {
+            WireButton(pauseMenuPanel, "ResumeButton", OnResumePressed);
+            WireButton(pauseMenuPanel, "ResetButton",  OnResetPressed);
+            WireButton(pauseMenuPanel, "QuitButton",   OnQuitPressed);
+        }
+
+        if (endMenuPanel != null)
+        {
+            finalScoreText = FindText(endMenuPanel, "FinalScoreText");
+            resultText     = FindText(endMenuPanel, "ResultText");
+            WireButton(endMenuPanel, "RetryButton", OnResetPressed);
+            WireButton(endMenuPanel, "QuitButton",  OnQuitPressed);
+        }
     }
 
     private void Update()
@@ -131,6 +197,22 @@ public class MenuManager : MonoBehaviour
             sb.AppendLine($"{i + 1}.  {scores[i].score,6}   {scores[i].date}");
 
         highScoresText.text = sb.ToString();
+    }
+
+    private static TextMeshProUGUI FindText(GameObject parent, string childName)
+    {
+        Transform child = parent.transform.Find(childName);
+        return child != null ? child.GetComponent<TextMeshProUGUI>() : null;
+    }
+
+    private static void WireButton(GameObject parent, string childName, UnityAction action)
+    {
+        Transform child = parent.transform.Find(childName);
+        if (child == null) return;
+        Button btn = child.GetComponent<Button>();
+        if (btn == null) return;
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(action);
     }
 
     private static void SetPanelVisible(GameObject panel, bool visible)
