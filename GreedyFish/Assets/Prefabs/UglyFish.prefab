@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1051442911700851736}
   - component: {fileID: 4539990897373164606}
   - component: {fileID: 5060131431055152755}
+  - component: {fileID: 6126421202306063005}
   m_Layer: 0
   m_Name: UglyFish
   m_TagString: UglyFish
@@ -107,6 +108,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &6126421202306063005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937600774224947565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1e8096f1d03bd47b862b2208272f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 40
 --- !u!1 &8969112736100588488
 GameObject:
   m_ObjectHideFlags: 0

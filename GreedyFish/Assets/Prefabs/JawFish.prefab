@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2808117758921346280}
   - component: {fileID: 3312442890209249774}
   - component: {fileID: 6878788480146656993}
+  - component: {fileID: 5131503107957985944}
   m_Layer: 0
   m_Name: JawFish
   m_TagString: JawFish
@@ -166,3 +167,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.37104464, y: 0.29661727}
   m_EdgeRadius: 0
+--- !u!114 &5131503107957985944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667195302298029074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1e8096f1d03bd47b862b2208272f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 30

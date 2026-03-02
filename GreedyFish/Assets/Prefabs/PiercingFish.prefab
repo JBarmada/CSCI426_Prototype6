@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5195529713041898494}
   - component: {fileID: 3386412303981979401}
   - component: {fileID: 7852119774244992951}
+  - component: {fileID: 8096897192059233909}
   m_Layer: 0
   m_Name: PiercingFish
   m_TagString: PiercingFish
@@ -166,3 +167,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &8096897192059233909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980948495195129380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1e8096f1d03bd47b862b2208272f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 20
