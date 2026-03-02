@@ -26,14 +26,14 @@ public class PlayerMovement : MonoBehaviour
         {
             oldDirection = direction;
             direction = 0;
-            ocean.flowMagnitude = -30;
+            ocean.flowMagnitude = -60;
             
         }
         else if (movement.x > 0)
         {
             oldDirection = direction;
             direction = 1;
-            ocean.flowMagnitude = 30;
+            ocean.flowMagnitude = 60;
             
         }
 

@@ -14,9 +14,11 @@ public class FishSpawner : MonoBehaviour
     {
         int randProj = Random.Range(0, projectilePrefabs.Length);
         int randSpawPoint = Random.Range(0, spawnPoints.Length);
-        Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
+        
+            Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
+        
       // StartCoroutine(spawnProj(spawnInterval));
-    }
+        }
 
     /*private IEnumerator spawnProj(float interval)
     {
