@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4539990897373164606}
   - component: {fileID: 5060131431055152755}
   - component: {fileID: 6126421202306063005}
-  m_Layer: 0
+  - component: {fileID: 3782053298359397233}
+  m_Layer: 5
   m_Name: UglyFish
   m_TagString: UglyFish
   m_Icon: {fileID: 0}
@@ -28,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 937600774224947565}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.16028, y: 1.85476, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -2.0763, y: 1.7708, z: 0}
+  m_LocalScale: {x: 1.5248, y: 1.5248, z: 1.5248}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7203334207794772906}
@@ -69,7 +70,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.012636304, y: -0.007371247}
+  m_Offset: {x: 0.26390302, y: -0.28903168}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -79,7 +80,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.20811343, y: 0.15124905}
+  m_Size: {x: 0.7611921, y: 0.5506948}
   m_EdgeRadius: 0
 --- !u!50 &5060131431055152755
 Rigidbody2D:
@@ -93,7 +94,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -121,6 +122,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 40
+--- !u!114 &3782053298359397233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937600774224947565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edad670c26d4ef08fc1a14c39ac8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  player: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
+  speed: 2
+  distance: 1
 --- !u!1 &8969112736100588488
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7203334207794772906}
   - component: {fileID: 4018246890068482090}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,8 +163,8 @@ Transform:
   m_GameObject: {fileID: 8969112736100588488}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.3013, y: -0.3013, z: 0}
+  m_LocalScale: {x: 2.8831, y: 2.8831, z: 2.8831}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1051442911700851736}

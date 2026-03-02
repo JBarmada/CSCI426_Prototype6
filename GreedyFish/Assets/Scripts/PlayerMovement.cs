@@ -19,10 +19,10 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         if (movement.x < 0){
-            ocean.flowMagnitude = -60;
+            ocean.flowMagnitude = -30;
         }
         else if(movement.x > 0){
-            ocean.flowMagnitude = 60;
+            ocean.flowMagnitude = 30;
         }
         
         movement.x = Input.GetAxisRaw("Horizontal");

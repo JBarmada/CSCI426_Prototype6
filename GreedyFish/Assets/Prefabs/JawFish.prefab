@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3312442890209249774}
   - component: {fileID: 6878788480146656993}
   - component: {fileID: 5131503107957985944}
-  m_Layer: 0
+  - component: {fileID: 586576939831694826}
+  m_Layer: 5
   m_Name: JawFish
   m_TagString: JawFish
   m_Icon: {fileID: 0}
@@ -29,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 7667195302298029074}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.74, y: 1.34, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.7536, y: 0.4449, z: 0}
+  m_LocalScale: {x: 4.65367, y: 4.65367, z: 4.65367}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -106,7 +107,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -180,3 +181,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 30
+--- !u!114 &586576939831694826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7667195302298029074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2edad670c26d4ef08fc1a14c39ac8bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  player: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
+  speed: 2
+  distance: 1
