@@ -2,6 +2,7 @@
 using GLTFast.Schema;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EvilFishScript : MonoBehaviour
 {
@@ -28,46 +29,6 @@ public class EvilFishScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (movement.x < 0)
-        {
-            oldDirection = direction;
-            direction = 0;
-         
-            
-        }
-        else if (movement.x > 0)
-        {
-            oldDirection = direction;
-            direction = 1;
-           
-            
-        }
-
-        if (oldDirection != direction)
-        {
-            //flip image
-           /* if (oldDirection == 1)
-            {
-                Vector3 dir = new Vector3(-1, 1, 1);
-                  
-                
-                
-
-            }
-            else
-            {
-                transform.localScale = new Vector3(1, 1, 1);
-
-
-
-            }*/
-            
-        }
-        
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        movement.Normalize();
-
 
 
 
@@ -88,9 +49,36 @@ public class EvilFishScript : MonoBehaviour
             return;
 
         distance = Vector2.Distance(transform.position, player.transform.position);
-       // Vector2 direction = player.transform.position - transform.position;
+        // Vector2 direction = player.transform.position - transform.position;
+
+        float old = transform.position.x;
 
         transform.position = Vector2.MoveTowards(this.transform.position, player.transform.position, speed * Time.deltaTime);
+
+        float newPos = transform.position.x;
+         float scaleVal = transform.localScale.x;
+
+        if (old > newPos)
+        {
+
+            if (scaleVal > 0)
+            {
+                transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+            }
+
+
+
+        }
+        else if (newPos > old)
+        {
+            if (scaleVal < 0)
+           {
+                transform.localScale = new Vector3(-1 * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+            }
+
+        }
         
     }
 
