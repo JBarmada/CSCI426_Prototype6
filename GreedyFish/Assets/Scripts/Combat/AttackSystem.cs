@@ -90,7 +90,7 @@ public class AttackSystem : MonoBehaviour
     /// </summary>
     public int ExecuteAttack()
     {
-         cam.SecondShake()
+        cam.SecondShake();
         
         if (SelectedAttack == null) return 0;
 
