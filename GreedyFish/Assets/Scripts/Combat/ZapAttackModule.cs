@@ -6,6 +6,7 @@ public class ZapAttackModule : PlayerAttackModuleBase
 {
     [Header("Zap Normal")]
     [SerializeField] private float normalStunDuration = 1.25f;
+    [SerializeField] private int normalDiceSides = 5;
 
     [Header("Zap Special")]
     [SerializeField] private float specialAcquireRadius = 3.5f;
@@ -15,9 +16,11 @@ public class ZapAttackModule : PlayerAttackModuleBase
     [SerializeField] private float specialDamageMultiplier = 1.35f;
     [SerializeField] private float specialStunDuration = 1.75f;
     [SerializeField] private float indicatorDuration = 0.2f;
+    [SerializeField] private int specialDiceSides = 6;
+    [SerializeField] private float specialCooldown = 8f;
 
     [Header("Visuals")]
-    [SerializeField] private ParticleSystem hitEffect;
+    [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private SpriteRenderer zoneIndicator;
 
     [Header("Audio")]
@@ -29,17 +32,69 @@ public class ZapAttackModule : PlayerAttackModuleBase
     {
         base.Awake();
 
+        // Set the dice sides and special cooldown on the attack data
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Zap);
+        if (atkData != null)
+        {
+            atkData.diceSides = normalDiceSides;
+            atkData.specialDiceSides = specialDiceSides;
+            atkData.specialMoveCooldown = specialCooldown;
+        }
+
         if (zoneIndicator != null)
             zoneIndicator.enabled = false;
     }
+
+    // ── Custom dice rolls ─────────────────────────────────────────────────────
+
+    private int RollZapDamage(int diceSides)
+    {
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Zap);
+        if (atkData == null) return 0;
+
+        int total = DiceRoller.Roll(
+            atkData.diceCount,
+            diceSides,
+            atkData.flatBonus,
+            out int[] individuals
+        );
+
+        AttackSystem.Instance.game.AddScore(total);
+        AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
+        return total;
+    }
+
+    // ── Particle helper ───────────────────────────────────────────────────────
+
+    private void SpawnHitEffectOnTarget(Transform target)
+    {
+        if (hitEffectPrefab == null || target == null) return;
+
+        GameObject fx = Instantiate(hitEffectPrefab, target.position, Quaternion.identity, target);
+        ParticleSystem ps = fx.GetComponent<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play();
+            Destroy(fx, ps.main.duration + ps.main.startLifetime.constantMax);
+        }
+        else
+        {
+            Destroy(fx, 2f);
+        }
+    }
+
+    // ── Normal attack ─────────────────────────────────────────────────────────
 
     public override void ExecuteNormal(GameObject primaryTarget)
     {
         if (primaryTarget == null)
             return;
 
-        int damage = RollDamage();
+        int damage = RollZapDamage(normalDiceSides);
         DamageAndRegisterMeat(primaryTarget, damage);
+
+        // Spawn particle effect on the enemy
+        SpawnHitEffectOnTarget(primaryTarget.transform);
 
         EnemyHealth enemy = primaryTarget.GetComponent<EnemyHealth>();
         EvilFishScript fish = primaryTarget.GetComponent<EvilFishScript>();
@@ -47,8 +102,15 @@ public class ZapAttackModule : PlayerAttackModuleBase
             fish.ApplyStun(normalStunDuration);
     }
 
+    // ── Special attack ────────────────────────────────────────────────────────
+
     public override void ExecuteSpecial()
     {
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Zap);
+        if (atkData == null || atkData.specialCooldownRemaining > 0)
+            return;
+
+        atkData.specialCooldownRemaining = specialCooldown;
         StartCoroutine(DoSpecial());
     }
 
@@ -64,13 +126,10 @@ public class ZapAttackModule : PlayerAttackModuleBase
             zoneIndicator.enabled = true;
         }
 
-        if (hitEffect != null)
-            hitEffect.Play();
-
         AudioManager.Instance?.Play(attackSoundClipName);
 
         int chainTargetCount = Random.Range(Mathf.Max(1, minChainTargets), Mathf.Max(1, maxChainTargets) + 1);
-        int damage = Mathf.Max(1, Mathf.CeilToInt(RollDamage() * specialDamageMultiplier));
+        int damage = Mathf.Max(1, Mathf.CeilToInt(RollZapDamage(specialDiceSides) * specialDamageMultiplier));
 
         var visited = new HashSet<EnemyHealth>();
         Collider2D currentLink = FindNearestEnemy(center, specialAcquireRadius, visited);
@@ -83,6 +142,9 @@ public class ZapAttackModule : PlayerAttackModuleBase
 
             visited.Add(enemy);
             DamageAndRegisterMeat(currentLink, damage);
+
+            // Spawn particle effect on each chained enemy
+            SpawnHitEffectOnTarget(currentLink.transform);
 
             if (!enemy.IsDead)
             {

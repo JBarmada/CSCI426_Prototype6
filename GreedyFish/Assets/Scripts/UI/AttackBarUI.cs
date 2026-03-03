@@ -105,7 +105,8 @@ public class AttackBarUI : MonoBehaviour
         if (AttackSystem.Instance.SelectedAttack.type != type) return;
 
         AttackData data = AttackSystem.Instance.SelectedAttack;
-        _modSection.SetSpecialMove(data.specialMoveName, remaining, data.specialMoveCooldown, data.specialUnlocked);
+        string formula = GetSpecialDiceFormula(data);
+        _modSection.SetSpecialMove(data.specialMoveName, remaining, data.specialMoveCooldown, data.specialUnlocked, formula);
     }
 
     private void HandleMeatChanged(AttackType type, int newCount, int threshold)
@@ -143,7 +144,10 @@ public class AttackBarUI : MonoBehaviour
 
         AttackData data = AttackSystem.Instance.GetAttack(type);
         if (data != null)
-            _modSection.SetSpecialMove(data.specialMoveName, data.specialCooldownRemaining, data.specialMoveCooldown, true);
+        {
+            string formula = GetSpecialDiceFormula(data);
+            _modSection.SetSpecialMove(data.specialMoveName, data.specialCooldownRemaining, data.specialMoveCooldown, true, formula);
+        }
     }
 
     // ── Internal ──────────────────────────────────────────────────────────────
@@ -166,7 +170,8 @@ public class AttackBarUI : MonoBehaviour
 
         _modSection.SetProgress(progress, data.meatCollected, threshold, maxed);
         _modSection.SetFormula(data.diceCount, data.diceSides, data.flatBonus);
-        _modSection.SetSpecialMove(data.specialMoveName, data.specialCooldownRemaining, data.specialMoveCooldown, data.specialUnlocked);
+        string specialFormula = GetSpecialDiceFormula(data);
+        _modSection.SetSpecialMove(data.specialMoveName, data.specialCooldownRemaining, data.specialMoveCooldown, data.specialUnlocked, specialFormula);
     }
 
     private static int GetNextThreshold(AttackData data)
@@ -174,5 +179,11 @@ public class AttackBarUI : MonoBehaviour
         if (data.meatCollected < AttackData.Level2Threshold) return AttackData.Level2Threshold;
         if (data.meatCollected < AttackData.Level3Threshold) return AttackData.Level3Threshold;
         return AttackData.SpecialThreshold;
+    }
+
+    private static string GetSpecialDiceFormula(AttackData data)
+    {
+        int sides = data.specialDiceSides > 0 ? data.specialDiceSides : data.diceSides;
+        return $"{data.diceCount}d{sides}+{data.flatBonus}";
     }
 }

@@ -14,6 +14,7 @@ public class AttackData
     public int diceCount;               // X in XdY+Z, starts at 1
     public int diceSides;               // Y, always 6
     public int flatBonus;               // Z, starts at 0
+    public int specialDiceSides;         // dice sides used by special attack (0 = use diceSides)
     public int level;                   // 1, 2, or 3
     public int meatCollected;           // running total for this attack type
     public bool specialUnlocked;

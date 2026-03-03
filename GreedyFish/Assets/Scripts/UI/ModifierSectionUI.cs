@@ -53,7 +53,7 @@ public class ModifierSectionUI : MonoBehaviour
     }
 
     /// <summary>Updates the special move cooldown line.</summary>
-    public void SetSpecialMove(string moveName, float cooldownRemaining, float cooldownMax, bool unlocked)
+    public void SetSpecialMove(string moveName, float cooldownRemaining, float cooldownMax, bool unlocked, string diceFormula = "")
     {
         if (specialMoveText == null) return;
 
@@ -63,14 +63,16 @@ public class ModifierSectionUI : MonoBehaviour
             return;
         }
 
+        string diceInfo = string.IsNullOrEmpty(diceFormula) ? "" : $" {diceFormula}";
+
         if (cooldownRemaining > 0f)
         {
             int cdSeconds = Mathf.CeilToInt(cooldownRemaining);
-            specialMoveText.text = $"{moveName} (CD: {cdSeconds}s)";
+            specialMoveText.text = $"{moveName}{diceInfo} (CD: {cdSeconds}s)";
         }
         else
         {
-            specialMoveText.text = $"{moveName} (Ready!)";
+            specialMoveText.text = $"{moveName}{diceInfo} (Ready!)";
         }
     }
 }
