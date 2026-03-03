@@ -27,15 +27,9 @@ public class AttackSystem : MonoBehaviour
     public event Action<AttackType, float> OnCooldownChanged; // (type, remaining)
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
-    public GameManager game;
-
-
-
-    
 
     private void Awake()
     {
-        game = GameObject.FindAnyObjectByType<GameManager>();
         if (Instance != null)
         {
             Destroy(this);
@@ -108,7 +102,7 @@ public class AttackSystem : MonoBehaviour
             SelectedAttack.flatBonus + bonusDamage,
             out int[] individuals
         );
-        game.AddScore(total);
+        GameManager.Instance?.AddScore(total);
         OnAttackRolled?.Invoke(total, individuals);
 
         // Grant 1 XP per hit to the selected attack (2 XP if this attack is buffed)

@@ -70,7 +70,7 @@ public class PoisonAttackModule : PlayerAttackModuleBase
             out int[] individuals
         );
 
-        AttackSystem.Instance.game.AddScore(total);
+        GameManager.Instance?.AddScore(total);
         AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
         AttackSystem.Instance.GrantHitXP(AttackType.Poison);
         return total;

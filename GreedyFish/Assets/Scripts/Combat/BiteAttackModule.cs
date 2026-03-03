@@ -123,7 +123,7 @@ public class BiteAttackModule : PlayerAttackModuleBase
             out int[] individuals
         );
 
-        AttackSystem.Instance.game.AddScore(total);
+        GameManager.Instance?.AddScore(total);
         AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
         AttackSystem.Instance.GrantHitXP(AttackType.Bite);
         return total;
