@@ -8,7 +8,7 @@ public class HurtPlayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		thePlayer = FindObjectOfType<PlayerController> ();	
+		thePlayer = PlayerController.FindFirstObjectByType<PlayerController> ();	
 	}
 
 	void OnTriggerEnter2D(Collider2D other){

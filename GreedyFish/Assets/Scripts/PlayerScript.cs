@@ -1,14 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    private BiteAttackZone    _biteZone;
-    private SpecialAttackZone _specialZone;
+    [Header("Attack Modules")]
+    [SerializeField] private BiteAttackModule biteAttack;
+    [SerializeField] private StabAttackModule stabAttack;
+    [SerializeField] private ZapAttackModule zapAttack;
+    [SerializeField] private PoisonAttackModule poisonAttack;
 
-    private void Start()
+    private readonly Dictionary<AttackType, PlayerAttackModuleBase> attackModules =
+        new Dictionary<AttackType, PlayerAttackModuleBase>();
+
+    private void Awake()
     {
-        _biteZone    = GetComponentInChildren<BiteAttackZone>(true);
-        _specialZone = GetComponentInChildren<SpecialAttackZone>(true);
+        EnsureModulesExist();
+        RebuildModuleLookup();
     }
 
     private void Update()
@@ -34,35 +41,17 @@ public class PlayerScript : MonoBehaviour
         if (selected == null)
             return;
 
-        if (selected.type == AttackType.Bite)
-        {
-            // Bite: AOE zone handles damage and meat registration for all enemies in range.
-            _biteZone?.Activate();
-        }
-        else
-        {
-            // All other attacks: single-target direct hit.
-            int damage = AttackSystem.Instance?.ExecuteAttack() ?? 0;
+        if (!attackModules.TryGetValue(selected.type, out PlayerAttackModuleBase module) || module == null)
+            return;
 
-            EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-            if (enemy == null)
-                return;
-
-            enemy.TakeDamage(damage);
-
-            if (enemy.IsDead)
-            {
-                int meatCount = AttackSystem.Instance?.RollMeatDrop() ?? 1;
-                AttackUpgradeSystem.Instance?.RegisterMeat(enemyAttackType.Value, meatCount);
-            }
-        }
+        module.ExecuteNormal(other);
     }
 
     // ── Public utility ────────────────────────────────────────────────────────
 
     /// <summary>
     /// Maps each enemy tag to the attack type that gains experience from killing it.
-    /// Public so BiteAttackZone and SpecialAttackZone can register meat on AOE kills.
+    /// Public so attack modules can register meat from kill events.
     /// Returns null when the tag is not a recognised enemy.
     /// </summary>
     public static AttackType? GetEnemyAttackType(string tag)
@@ -79,16 +68,15 @@ public class PlayerScript : MonoBehaviour
 
     // ── Internal ──────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Activates the 360° special zone if the currently selected attack's special is
-    /// unlocked and off cooldown. Starts the cooldown timer on success.
-    /// </summary>
     private void TryFireSpecial()
     {
-        if (AttackSystem.Instance == null || _specialZone == null) return;
+        if (AttackSystem.Instance == null) return;
 
         AttackData selected = AttackSystem.Instance.SelectedAttack;
         if (selected == null) return;
+
+        if (!attackModules.TryGetValue(selected.type, out PlayerAttackModuleBase module) || module == null)
+            return;
 
         if (!selected.specialUnlocked)
         {
@@ -102,7 +90,39 @@ public class PlayerScript : MonoBehaviour
             return;
         }
 
-        _specialZone.Activate();
+        module.ExecuteSpecial();
         selected.specialCooldownRemaining = selected.specialMoveCooldown;
+    }
+
+    private void EnsureModulesExist()
+    {
+        if (biteAttack == null)
+            biteAttack = GetComponentInChildren<BiteAttackModule>(true) ?? gameObject.AddComponent<BiteAttackModule>();
+
+        if (stabAttack == null)
+            stabAttack = GetComponentInChildren<StabAttackModule>(true) ?? gameObject.AddComponent<StabAttackModule>();
+
+        if (zapAttack == null)
+            zapAttack = GetComponentInChildren<ZapAttackModule>(true) ?? gameObject.AddComponent<ZapAttackModule>();
+
+        if (poisonAttack == null)
+            poisonAttack = GetComponentInChildren<PoisonAttackModule>(true) ?? gameObject.AddComponent<PoisonAttackModule>();
+    }
+
+    private void RebuildModuleLookup()
+    {
+        attackModules.Clear();
+
+        if (biteAttack != null)
+            attackModules[AttackType.Bite] = biteAttack;
+
+        if (stabAttack != null)
+            attackModules[AttackType.Stab] = stabAttack;
+
+        if (zapAttack != null)
+            attackModules[AttackType.Zap] = zapAttack;
+
+        if (poisonAttack != null)
+            attackModules[AttackType.Poison] = poisonAttack;
     }
 }
