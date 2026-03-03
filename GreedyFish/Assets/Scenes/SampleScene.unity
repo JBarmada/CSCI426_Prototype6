@@ -275,6 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
+  cam: {fileID: 0}
 --- !u!60 &5309293
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -556,8 +557,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -2906,6 +2907,7 @@ MonoBehaviour:
   meatDropDiceCount: 1
   meatDropDiceSides: 3
   meatDropFlatBonus: 1
+  game: {fileID: 0}
 --- !u!1 &455246734
 GameObject:
   m_ObjectHideFlags: 0
@@ -3109,6 +3111,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3234,6 +3237,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9da23dd00e7cc42b6a0c83c55a8eec6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  duration: 1
+  start: 0
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.08764172
+      outSlope: 0.08764172
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.09071685
+    - serializedVersion: 3
+      time: 0.11385637
+      value: 0.273839
+      inSlope: -2.7823482
+      outSlope: -2.7823482
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.11998097
+    - serializedVersion: 3
+      time: 0.598938
+      value: 0
+      inSlope: -0.5645215
+      outSlope: -0.5645215
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &522652479
 GameObject:
   m_ObjectHideFlags: 0
@@ -4092,7 +4142,7 @@ GameObject:
   - component: {fileID: 612506347}
   m_Layer: 0
   m_Name: Managers
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12616,7 +12666,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 612506346}
-  - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1386656443}
   - {fileID: 1241633044}
@@ -12629,3 +12678,4 @@ SceneRoots:
   - {fileID: 644884566}
   - {fileID: 896542149}
   - {fileID: 1684526218}
+  - {fileID: 519420032}

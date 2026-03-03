@@ -27,9 +27,15 @@ public class AttackSystem : MonoBehaviour
     public event Action<AttackType, float> OnCooldownChanged; // (type, remaining)
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
+    public GameManager game;
+
+
+
+    
 
     private void Awake()
     {
+        game = GameObject.FindAnyObjectByType<GameManager>();
         if (Instance != null)
         {
             Destroy(this);
@@ -97,7 +103,7 @@ public class AttackSystem : MonoBehaviour
             SelectedAttack.flatBonus,
             out int[] individuals
         );
-
+        game.AddScore(total);
         OnAttackRolled?.Invoke(total, individuals);
         return total;
     }

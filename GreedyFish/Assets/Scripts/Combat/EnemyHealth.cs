@@ -19,6 +19,8 @@ public class EnemyHealth : MonoBehaviour
     /// <summary>Fired whenever HP changes. (currentHP, maxHP)</summary>
     public event Action<int, int> OnHealthChanged;
     public FishSpawner spawner;
+     public GameManager game;
+    
 
 
 
@@ -33,6 +35,8 @@ public class EnemyHealth : MonoBehaviour
     {
         CurrentHealth = maxHealth;
         spawner = GameObject.FindAnyObjectByType<FishSpawner>();
+        game = GameObject.FindAnyObjectByType<GameManager>();
+       
     }
 
     /// <summary>Reduces HP by <paramref name="amount"/>. Destroys the GameObject on death.</summary>
@@ -47,8 +51,10 @@ public class EnemyHealth : MonoBehaviour
         {
             //if (this.CompareTag("EelFish"))
             //{
-                groupSize = 1;
-                StartCoroutine(SpawnProj());
+            game.AddScore(4);
+            groupSize = 1;
+            StartCoroutine(SpawnProj());
+            
 
             //}
             spawner.deadCount++;

@@ -14,6 +14,7 @@ public abstract class PlayerAttackModuleBase : MonoBehaviour
     protected static readonly Collider2D[] HitBuffer = new Collider2D[40];
 
     public abstract AttackType AttackType { get; }
+   
 
     protected virtual void Awake()
     {
@@ -23,6 +24,7 @@ public abstract class PlayerAttackModuleBase : MonoBehaviour
         enemyFilter.useLayerMask = true;
         enemyFilter.layerMask = enemyLayer;
         enemyFilter.useTriggers = true;
+     
     }
 
     public abstract void ExecuteNormal(GameObject primaryTarget);

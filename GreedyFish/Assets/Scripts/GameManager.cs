@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public event Action<GameState> OnStateChanged;
     public event Action<float> OnTimerTick;
     public event Action<int> OnScoreChanged;
+    
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SetState(GameState.MainMenu);
+       
     }
 
     private void Update()

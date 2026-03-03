@@ -21,6 +21,7 @@ public class PlayerHealth : MonoBehaviour
 
     /// <summary>Fired once when HP reaches zero.</summary>
     public event Action OnDied;
+    public CameraShake cam;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -29,6 +30,7 @@ public class PlayerHealth : MonoBehaviour
         if (Instance != null) { Destroy(this); return; }
         Instance = this;
         CurrentHealth = maxHealth;
+        cam = GameObject.FindAnyObjectByType<CameraShake>();
     }
 
     private void OnDestroy()
@@ -64,6 +66,7 @@ public class PlayerHealth : MonoBehaviour
     /// <summary>Deals damage to the player. Triggers death and GameOver when HP hits zero.</summary>
     public void TakeDamage(int amount)
     {
+        cam.start = true;
         if (IsDead) return;
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
