@@ -74,6 +74,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (IsDead)
         {
+            cam.start = false;
             OnDied?.Invoke();
             GameManager.Instance?.NotifyPlayerDied();
         }

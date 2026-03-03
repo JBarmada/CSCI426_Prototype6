@@ -323,13 +323,13 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.027266568, y: -0.0054611117}
-      - {x: -0.32735834, y: 0.0138082355}
-      - {x: -0.2778416, y: 0.084023416}
+      - {x: -0.30330417, y: 0.05242775}
+      - {x: -0.27979067, y: 0.08597249}
       - {x: -0.27985302, y: 0.17582051}
       - {x: 0.011168471, y: 0.5560823}
       - {x: 0.29711482, y: 0.15402423}
-      - {x: 0.28981462, y: 0.07717573}
-      - {x: 0.32041618, y: 0.022296757}
+      - {x: 0.28684917, y: 0.078658454}
+      - {x: 0.32782978, y: 0.0022197627}
   m_UseDelaunayMesh: 1
 --- !u!4 &33971720 stripped
 Transform:
@@ -14429,6 +14429,10 @@ PrefabInstance:
     - target: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6361417263729819942, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
       propertyPath: m_SortingOrder

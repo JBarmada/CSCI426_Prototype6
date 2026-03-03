@@ -6,6 +6,7 @@ public class CameraShake : MonoBehaviour
     public float duration = 1f;
     public bool start = false;
     public AnimationCurve curve;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

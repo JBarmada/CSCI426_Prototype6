@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9147551598304616285}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,6 +53,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
   ocean: {fileID: 0}
+  direction: 0
+  oldDirection: 0
 --- !u!114 &2876261685380818997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,6 +67,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c85ed00f2884a2ba7ff7664fa64bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  biteAttack: {fileID: 0}
+  stabAttack: {fileID: 0}
+  zapAttack: {fileID: 0}
+  poisonAttack: {fileID: 0}
 --- !u!50 &6183433200449985600
 Rigidbody2D:
   serializedVersion: 5

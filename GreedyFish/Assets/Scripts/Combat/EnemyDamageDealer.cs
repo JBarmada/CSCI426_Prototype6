@@ -9,7 +9,7 @@ public class EnemyDamageDealer : MonoBehaviour
     [SerializeField] private int damagePerHit = 10;
 
     [Tooltip("Minimum seconds between successive hits to the same player.")]
-    [SerializeField] private float hitCooldown = 0.5f;
+    [SerializeField] private float hitCooldown = 1f;
 
     private float _nextHitTime;
 

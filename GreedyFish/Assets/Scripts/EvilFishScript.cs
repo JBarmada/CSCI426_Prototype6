@@ -2,6 +2,7 @@
 using GLTFast.Schema;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UIElements;
 
 public class EvilFishScript : MonoBehaviour
@@ -19,31 +20,27 @@ public class EvilFishScript : MonoBehaviour
     //0 is left, 1 is right;
     public int direction = 0;
     public int oldDirection = 0;
+
+    public Rigidbody2D rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameObject.Find("Player");
+        rb = GetComponent<Rigidbody2D>();
         
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
-
-
-
-
-
-
-        if (_stunRemaining > 0f)
+        /*if (_stunRemaining > 0f)
         {
+            /*transform.position = transform.position;
             _stunRemaining -= Time.deltaTime;
             if (_stunRemaining < 0f)
                 _stunRemaining = 0f;
             return;
-        }
+        }*/
 
         if (player == null)
             return;
@@ -82,12 +79,36 @@ public class EvilFishScript : MonoBehaviour
         
     }
 
-    public void ApplyStun(float duration)
+    public void OnCollision2D(Collision2D collision)
     {
-        if (duration <= 0f)
+        //if(collision.gameObject.CompareTag("Player"))
+        //StartCoroutine(ApplyStun(4));
+        
+    }
+
+    public IEnumerator ApplyStun(float duration)
+    {
+        Vector3 startPosition = transform.position;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            //float strength = curve.Evaluate(elapsedTime / duration);
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
+            yield return null;
+        }
+
+       // transform.position = startPosition;
+
+
+
+
+       /* if (duration <= 0f)
             return;
 
         if (duration > _stunRemaining)
-            _stunRemaining = duration;
+            _stunRemaining = duration;*/
     }
 }
