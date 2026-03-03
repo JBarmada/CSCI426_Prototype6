@@ -19,6 +19,8 @@ public class EnemyHealth : MonoBehaviour
     /// <summary>Fired whenever HP changes. (currentHP, maxHP)</summary>
     public event Action<int, int> OnHealthChanged;
     public FishSpawner spawner;
+
+    public CameraShake cam;
     
 
 
@@ -32,6 +34,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void Awake()
     {
+         cam = GameObject.FindAnyObjectByType<CameraShake>();
         CurrentHealth = maxHealth;
         spawner = GameObject.FindAnyObjectByType<FishSpawner>();
        
@@ -40,6 +43,8 @@ public class EnemyHealth : MonoBehaviour
     /// <summary>Reduces HP by <paramref name="amount"/>. Destroys the GameObject on death.</summary>
     public void TakeDamage(int amount)
     {
+         cam.start = true;
+         
         if (IsDead) return;
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);

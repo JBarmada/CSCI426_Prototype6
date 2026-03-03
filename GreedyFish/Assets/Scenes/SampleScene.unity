@@ -4723,6 +4723,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9bccbc50d4283524eb16fcc1745707a6, type: 3}
   poolSize: 12
   masterVolume: 1
+  musicClip: {fileID: 0}
+  musicVolume: 0.4
+  playMusicOnStart: 1
 --- !u!114 &612506344
 MonoBehaviour:
   m_ObjectHideFlags: 0

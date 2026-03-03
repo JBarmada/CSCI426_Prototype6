@@ -43,6 +43,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        
         if (collision.gameObject.CompareTag("PiercingFish"))
         {
             TakeDamage(5);

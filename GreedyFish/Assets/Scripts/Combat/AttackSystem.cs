@@ -63,10 +63,12 @@ public class AttackSystem : MonoBehaviour
     /// <summary>Returns the AttackData for the given type, or null if not found.</summary>
     public AttackData GetAttack(AttackType type)
     {
+
         if (attacks == null) return null;
 
         foreach (AttackData data in attacks)
         {
+            
             if (data.type == type)
                 return data;
         }
@@ -90,7 +92,7 @@ public class AttackSystem : MonoBehaviour
     /// </summary>
     public int ExecuteAttack()
     {
-        cam.SecondShake();
+       
         
         if (SelectedAttack == null) return 0;
 

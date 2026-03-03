@@ -11,9 +11,10 @@ public class PlayerScript : MonoBehaviour
 
     private readonly Dictionary<AttackType, PlayerAttackModuleBase> attackModules =
         new Dictionary<AttackType, PlayerAttackModuleBase>();
+          
 
     private void Awake()
-    {
+    {   
         EnsureModulesExist();
         RebuildModuleLookup();
     }
@@ -29,6 +30,7 @@ public class PlayerScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        
         if (GameManager.Instance?.CurrentState != GameState.Playing) return;
 
         GameObject other = collision.gameObject;
