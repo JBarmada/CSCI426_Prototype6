@@ -21,6 +21,9 @@ public class PlayerHealth : MonoBehaviour
 
     /// <summary>Fired once when HP reaches zero.</summary>
     public event Action OnDied;
+
+
+    
     public CameraShake cam;
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────

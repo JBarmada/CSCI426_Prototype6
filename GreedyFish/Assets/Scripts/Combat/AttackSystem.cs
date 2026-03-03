@@ -18,6 +18,7 @@ public class AttackSystem : MonoBehaviour
     [SerializeField] private int meatDropDiceSides = 3;
     [SerializeField] private int meatDropFlatBonus = 1;
 
+   public CameraShake cam;
     public AttackData SelectedAttack { get; private set; }
 
     // ── Events ────────────────────────────────────────────────────────────────
@@ -30,6 +31,7 @@ public class AttackSystem : MonoBehaviour
 
     private void Awake()
     {
+         cam = GameObject.FindAnyObjectByType<CameraShake>();
         if (Instance != null)
         {
             Destroy(this);
@@ -88,6 +90,7 @@ public class AttackSystem : MonoBehaviour
     /// </summary>
     public int ExecuteAttack()
     {
+         cam.SecondShake()
         
         if (SelectedAttack == null) return 0;
 
