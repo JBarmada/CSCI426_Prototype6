@@ -8,6 +8,8 @@ public class FishSpawner : MonoBehaviour
     public Transform[] spawnPoints;
     public GameObject[] projectilePrefabs;
 
+    public GameObject poisonEffect;
+
     [SerializeField] private float spawnInterval = 1.0f;
     [Tooltip("Number of fish to spawn per group")]
     [SerializeField] private int groupSize = 1;
@@ -47,9 +49,20 @@ public class FishSpawner : MonoBehaviour
         {
             for (int i = 0; i < groupSize; i++)
             {
+                yield return new WaitForSeconds(spawnInterval);
                 Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
                 spawnCount++;
+                
             }
+
+            /*if (randProj == 3)
+                {
+
+                    Instantiate(poisonEffect, spawnPoints[randSpawPoint].position, transform.rotation);
+                poisonEffect.SetActive(false);
+                    
+                }*/
+
             StopCoroutine(SpawnProj());
 
         }

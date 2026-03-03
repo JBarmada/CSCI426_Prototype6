@@ -70,6 +70,7 @@ public class EnemyHealth : MonoBehaviour
 
 
         int randProj = UnityEngine.Random.Range(0, projectilePrefabs.Length);
+        
 
 
 
