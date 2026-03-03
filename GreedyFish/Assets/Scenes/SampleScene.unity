@@ -3222,7 +3222,7 @@ MonoBehaviour:
   meatDropDiceCount: 1
   meatDropDiceSides: 3
   meatDropFlatBonus: 1
-  game: {fileID: 0}
+  cam: {fileID: 0}
 --- !u!1 &455246734
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,7 +4716,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b010eea1d8c42f4eaad910bb442eaa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 83b9a9c9b63c9784b910b1e57c9183db, type: 3}
+  - {fileID: 8300000, guid: ed2be81eec0b564489eedc22cbb5f630, type: 3}
+  - {fileID: 8300000, guid: caab9b1838956724ea4b46e5bb24541e, type: 3}
+  - {fileID: 8300000, guid: 9bccbc50d4283524eb16fcc1745707a6, type: 3}
   poolSize: 12
   masterVolume: 1
 --- !u!114 &612506344
@@ -4917,8 +4921,8 @@ MonoBehaviour:
   zoneIndicator: {fileID: 141730877}
   specialZoneIndicator: {fileID: 830838800}
   jawStormParticlePrefab: {fileID: 3796039653423602478, guid: f39de005a8924ab4cbcc81496118a31f, type: 3}
-  biteSoundClipName: BiteAttack
-  specialSoundClipName: SpecialAttack
+  biteSoundClipName: bite
+  specialSoundClipName: bite
 --- !u!1001 &644884566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7643,7 +7647,7 @@ MonoBehaviour:
   zoneIndicator: {fileID: 2057353557}
   specialZoneIndicator: {fileID: 2057353557}
   specialParticleEffectPrefab: {fileID: 2057353556}
-  attackSoundClipName: SpecialAttack
+  attackSoundClipName: stab
 --- !u!4 &1240644838
 Transform:
   m_ObjectHideFlags: 0
@@ -11262,7 +11266,7 @@ MonoBehaviour:
   specialCooldown: 6
   hitEffectPrefab: {fileID: 61973835152431629, guid: f47f7c405bda2604290c7205dbfa6531, type: 3}
   zoneIndicator: {fileID: 1170356859}
-  attackSoundClipName: SpecialAttack
+  attackSoundClipName: zap
 --- !u!4 &1662135275
 Transform:
   m_ObjectHideFlags: 0
@@ -13091,8 +13095,8 @@ MonoBehaviour:
   zoneIndicator: {fileID: 0}
   cloudParticleEffectPrefab: {fileID: 4425129568585013132, guid: bbeeb0ddc21369746aaaae5c5c1c09cf, type: 3}
   cloudParticleScale: {x: 1, y: 1, z: 1}
-  normalSoundClipName: SpecialAttack
-  specialSoundClipName: SpecialAttack
+  normalSoundClipName: poison
+  specialSoundClipName: poison
 --- !u!4 &1969607992
 Transform:
   m_ObjectHideFlags: 0

@@ -93,6 +93,8 @@ public class ZapAttackModule : PlayerAttackModuleBase
         if (primaryTarget == null)
             return;
 
+        AudioManager.Instance?.Play(attackSoundClipName);
+
         int damage = RollZapDamage(normalDiceSides);
         DamageAndRegisterMeat(primaryTarget, damage);
 
