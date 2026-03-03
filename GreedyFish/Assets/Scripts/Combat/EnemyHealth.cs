@@ -36,7 +36,7 @@ public class EnemyHealth : MonoBehaviour
     {
          cam = GameObject.FindAnyObjectByType<CameraShake>();
         CurrentHealth = maxHealth;
-        spawner = GameObject.FindAnyObjectByType<FishSpawner>();
+        // spawner is now assigned by the FishSpawner that instantiated this enemy
        
     }
 

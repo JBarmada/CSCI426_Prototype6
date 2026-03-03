@@ -11,6 +11,7 @@ TagManager:
   - FxTemporaire
   - Food
   - GameManager
+  - fishspawner2
   layers:
   - Default
   - TransparentFX

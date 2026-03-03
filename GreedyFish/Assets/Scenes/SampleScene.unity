@@ -276,6 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
   cam: {fileID: 0}
+  damageSoundClipName: hurt
 --- !u!60 &5309293
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -4320,6 +4321,66 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8620588918006998812, guid: 7f906c77905876d488e88e99d13c3d7d, type: 3}
   m_PrefabInstance: {fileID: 847291104}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &594731109
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594731111}
+  - component: {fileID: 594731110}
+  m_Layer: 0
+  m_Name: FishSpawner2
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &594731110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594731109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92cf22c88e8124e2297dbff4041d7d45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  spawnPoints:
+  - {fileID: 594731111}
+  - {fileID: 501956609}
+  - {fileID: 220416072}
+  - {fileID: 527920712}
+  projectilePrefabs:
+  - {fileID: 7728107823495339157, guid: 0cb0dec8217d849ef86e4a59a397ecc6, type: 3}
+  - {fileID: 7667195302298029074, guid: 5293e079d0157437f858b1cb42c40856, type: 3}
+  - {fileID: 980948495195129380, guid: 5790c0f9e0d674a51a0bec0b97a8ac38, type: 3}
+  - {fileID: 937600774224947565, guid: 1ea214748cf414e10bccb419f1e88087, type: 3}
+  poisonEffect: {fileID: 6672457511968211594, guid: a249d879540994ab0ae9e59070a91bd2, type: 3}
+  spawnInterval: 0.5
+  groupSize: 6
+  activateAtTimeRemaining: 25
+  deadCount: 0
+  spawnCount: 0
+--- !u!4 &594731111
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594731109}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.03, y: 3.36, z: 0}
+  m_LocalScale: {x: 1.0972, y: 1.0972, z: 1.0972}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &600549832
 GameObject:
   m_ObjectHideFlags: 0
@@ -4721,9 +4782,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ed2be81eec0b564489eedc22cbb5f630, type: 3}
   - {fileID: 8300000, guid: caab9b1838956724ea4b46e5bb24541e, type: 3}
   - {fileID: 8300000, guid: 9bccbc50d4283524eb16fcc1745707a6, type: 3}
+  - {fileID: 8300000, guid: 9a8609cca5f305e42a6699afd4f9df6c, type: 3}
+  - {fileID: 8300000, guid: e683ab80d04b16345b37d582a4d70966, type: 3}
+  - {fileID: 8300000, guid: bca3277795c530e4baff73d331195128, type: 3}
   poolSize: 12
   masterVolume: 1
-  musicClip: {fileID: 0}
+  musicClip: {fileID: 8300000, guid: e683ab80d04b16345b37d582a4d70966, type: 3}
   musicVolume: 0.4
   playMusicOnStart: 1
 --- !u!114 &612506344
@@ -6819,6 +6883,7 @@ MonoBehaviour:
   poisonEffect: {fileID: 6672457511968211594, guid: a249d879540994ab0ae9e59070a91bd2, type: 3}
   spawnInterval: 1
   groupSize: 4
+  activateAtTimeRemaining: 60
   deadCount: 0
   spawnCount: 0
 --- !u!4 &1126192613
@@ -14558,6 +14623,7 @@ SceneRoots:
   - {fileID: 255764261}
   - {fileID: 1717013795}
   - {fileID: 1126192613}
+  - {fileID: 594731111}
   - {fileID: 92017336}
   - {fileID: 1840657766}
   - {fileID: 644884566}

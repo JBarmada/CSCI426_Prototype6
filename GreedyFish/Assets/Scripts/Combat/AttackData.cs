@@ -22,7 +22,7 @@ public class AttackData
 
     // ── Level thresholds ─────────────────────────────────────────────────────
 
-    public const int Level2Threshold   = 15;  // → 1d6+1
-    public const int Level3Threshold   = 30;  // → 2d6+1
-    public const int SpecialThreshold  = 45;  // → 2d6+2, special unlocked
+    public const int Level2Threshold   = 30;  // → 1d6+1
+    public const int Level3Threshold   = 60;  // → 2d6+1
+    public const int SpecialThreshold  = 90;  // → 2d6+2, special unlocked
 }

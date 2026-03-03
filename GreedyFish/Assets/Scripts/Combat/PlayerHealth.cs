@@ -26,6 +26,9 @@ public class PlayerHealth : MonoBehaviour
     
     public CameraShake cam;
 
+    [Header("Audio")]
+    [SerializeField] private string damageSoundClipName = "PlayerHit";
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     private void Awake()
@@ -72,6 +75,8 @@ public class PlayerHealth : MonoBehaviour
     {
         cam.start = true;
         if (IsDead) return;
+
+        AudioManager.Instance?.Play(damageSoundClipName);
 
         CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
         OnHealthChanged?.Invoke(CurrentHealth, maxHealth);
