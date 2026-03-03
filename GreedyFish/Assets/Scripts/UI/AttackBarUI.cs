@@ -39,7 +39,10 @@ public class AttackBarUI : MonoBehaviour
     private void SubscribeToEvents()
     {
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnStateChanged += HandleStateChanged;
+            GameManager.Instance.OnBuffedAttackChosen += HandleBuffedAttackChosen;
+        }
 
         if (AttackSystem.Instance != null)
         {
@@ -59,7 +62,10 @@ public class AttackBarUI : MonoBehaviour
     private void UnsubscribeFromEvents()
     {
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnStateChanged -= HandleStateChanged;
+            GameManager.Instance.OnBuffedAttackChosen -= HandleBuffedAttackChosen;
+        }
 
         if (AttackSystem.Instance != null)
         {
@@ -81,6 +87,13 @@ public class AttackBarUI : MonoBehaviour
     private void HandleStateChanged(GameState state)
     {
         gameObject.SetActive(state == GameState.Playing);
+    }
+
+    private void HandleBuffedAttackChosen(AttackType buffedType)
+    {
+        if (_slots == null) return;
+        foreach (AttackSlotUI slot in _slots)
+            slot.SetBuffed(slot.AttackType == buffedType);
     }
 
     private void HandleAttackSelected(AttackType type)
@@ -134,7 +147,10 @@ public class AttackBarUI : MonoBehaviour
         {
             AttackData data = AttackSystem.Instance.GetAttack(type);
             if (data != null && AttackSystem.Instance.SelectedAttack?.type == type)
-                _modSection.SetFormula(data.diceCount, data.diceSides, data.flatBonus);
+            {
+                int displayBonus = data.flatBonus + AttackSystem.Instance.GetBuffDamageBonus(type);
+                _modSection.SetFormula(data.diceCount, data.diceSides, displayBonus);
+            }
         }
     }
 
@@ -169,7 +185,8 @@ public class AttackBarUI : MonoBehaviour
         float progress = maxed ? 1f : (float)data.meatCollected / threshold;
 
         _modSection.SetProgress(progress, data.meatCollected, threshold, maxed);
-        _modSection.SetFormula(data.diceCount, data.diceSides, data.flatBonus);
+        int displayBonus = data.flatBonus + AttackSystem.Instance.GetBuffDamageBonus(data.type);
+        _modSection.SetFormula(data.diceCount, data.diceSides, displayBonus);
         string specialFormula = GetSpecialDiceFormula(data);
         _modSection.SetSpecialMove(data.specialMoveName, data.specialCooldownRemaining, data.specialMoveCooldown, data.specialUnlocked, specialFormula);
     }
@@ -184,6 +201,7 @@ public class AttackBarUI : MonoBehaviour
     private static string GetSpecialDiceFormula(AttackData data)
     {
         int sides = data.specialDiceSides > 0 ? data.specialDiceSides : data.diceSides;
-        return $"{data.diceCount}d{sides}+{data.flatBonus}";
+        int buffBonus = AttackSystem.Instance != null ? AttackSystem.Instance.GetBuffDamageBonus(data.type) : 0;
+        return $"{data.diceCount}d{sides}+{data.flatBonus + buffBonus}";
     }
 }

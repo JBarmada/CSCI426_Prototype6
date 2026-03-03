@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class MenuManager : MonoBehaviour
     private TextMeshProUGUI finalScoreText;
     private TextMeshProUGUI resultText;
     private TextMeshProUGUI breakdownText;
+    private TextMeshProUGUI buffAnnouncementText;
 
     private const string ControlsContent =
         "Move:  WASD / Arrow Keys\n" +
@@ -45,6 +47,7 @@ public class MenuManager : MonoBehaviour
             return;
 
         GameManager.Instance.OnStateChanged += HandleStateChanged;
+        GameManager.Instance.OnBuffedAttackChosen += HandleBuffedAttackChosen;
         HandleStateChanged(GameManager.Instance.CurrentState);
     }
 
@@ -53,7 +56,10 @@ public class MenuManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnStateChanged -= HandleStateChanged;
+            GameManager.Instance.OnBuffedAttackChosen -= HandleBuffedAttackChosen;
+        }
     }
 
     // ── Scene reload ──────────────────────────────────────────────────────────
@@ -90,6 +96,11 @@ public class MenuManager : MonoBehaviour
         startMenuPanel = ct.Find("StartMenuPanel")?.gameObject;
         pauseMenuPanel = ct.Find("PauseMenuPanel")?.gameObject;
         endMenuPanel   = ct.Find("EndMenuPanel")?.gameObject;
+
+        // Buff announcement text — sits directly on the canvas, hidden by default
+        buffAnnouncementText = FindText(canvas, "BuffAnnouncementText");
+        if (buffAnnouncementText != null)
+            buffAnnouncementText.gameObject.SetActive(false);
 
         if (startMenuPanel != null)
         {
@@ -178,6 +189,31 @@ public class MenuManager : MonoBehaviour
     }
 
     // ── Internal ──────────────────────────────────────────────────────────────
+
+    private void HandleBuffedAttackChosen(AttackType buffedType)
+    {
+        if (buffAnnouncementText != null)
+            StartCoroutine(ShowBuffAnnouncement(buffedType));
+    }
+
+    private IEnumerator ShowBuffAnnouncement(AttackType buffedType)
+    {
+        string attackName = buffedType switch
+        {
+            AttackType.Bite   => "Bite",
+            AttackType.Stab   => "Stab",
+            AttackType.Zap    => "Zap",
+            AttackType.Poison => "Poison",
+            _                 => buffedType.ToString()
+        };
+
+        buffAnnouncementText.text = $"<color=#33FF33>{attackName}</color> is <color=#33FF33>BUFFED</color> this round!\n+XP & +DMG";
+        buffAnnouncementText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(3.5f);
+
+        buffAnnouncementText.gameObject.SetActive(false);
+    }
 
     private void PopulateEndMenu()
     {

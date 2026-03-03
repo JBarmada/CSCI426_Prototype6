@@ -21,9 +21,13 @@ public class GameManager : MonoBehaviour
     /// <summary>True when the round ended naturally (timer expired). False when the player died.</summary>
     public bool PlayerSurvived { get; private set; }
 
+    /// <summary>The attack type that receives bonus XP and damage this round.</summary>
+    public AttackType BuffedAttackType { get; private set; }
+
     public event Action<GameState> OnStateChanged;
     public event Action<float> OnTimerTick;
     public event Action<int> OnScoreChanged;
+    public event Action<AttackType> OnBuffedAttackChosen;
 
     // ── Score breakdown ───────────────────────────────────────────────────────
     private Dictionary<ScoreCategory, int> _scoreBreakdown = new Dictionary<ScoreCategory, int>();
@@ -77,9 +81,15 @@ public class GameManager : MonoBehaviour
             _scoreBreakdown[cat] = 0;
         TimeRemaining = gameDuration;
         PlayerSurvived = false;
+
+        // Pick a random buffed attack for this round
+        AttackType[] allTypes = (AttackType[])Enum.GetValues(typeof(AttackType));
+        BuffedAttackType = allTypes[UnityEngine.Random.Range(0, allTypes.Length)];
+
         OnScoreChanged?.Invoke(CurrentScore);
         OnTimerTick?.Invoke(TimeRemaining);
         SetState(GameState.Playing);
+        OnBuffedAttackChosen?.Invoke(BuffedAttackType);
     }
 
     /// <summary>Pauses the game.</summary>

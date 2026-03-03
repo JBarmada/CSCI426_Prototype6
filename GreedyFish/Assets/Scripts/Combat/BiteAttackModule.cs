@@ -113,16 +113,19 @@ public class BiteAttackModule : PlayerAttackModuleBase
         AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Bite);
         if (atkData == null) return 0;
 
+        int buffBonus = AttackSystem.Instance.GetBuffDamageBonus(AttackType.Bite);
+
         // Roll with d12 (12-sided dice) instead of normal d6
         int total = DiceRoller.Roll(
             atkData.diceCount,
             12,
-            atkData.flatBonus,
+            atkData.flatBonus + buffBonus,
             out int[] individuals
         );
 
         AttackSystem.Instance.game.AddScore(total);
         AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
+        AttackSystem.Instance.GrantHitXP(AttackType.Bite);
         return total;
     }
 

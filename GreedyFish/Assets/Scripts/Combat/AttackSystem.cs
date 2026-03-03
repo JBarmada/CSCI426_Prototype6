@@ -97,14 +97,27 @@ public class AttackSystem : MonoBehaviour
         
         if (SelectedAttack == null) return 0;
 
+        // Buffed attack gets +1 flat damage bonus
+        int bonusDamage = 0;
+        if (GameManager.Instance != null && SelectedAttack.type == GameManager.Instance.BuffedAttackType)
+            bonusDamage = 1;
+
         int total = DiceRoller.Roll(
             SelectedAttack.diceCount,
             SelectedAttack.diceSides,
-            SelectedAttack.flatBonus,
+            SelectedAttack.flatBonus + bonusDamage,
             out int[] individuals
         );
         game.AddScore(total);
         OnAttackRolled?.Invoke(total, individuals);
+
+        // Grant 1 XP per hit to the selected attack (2 XP if this attack is buffed)
+        if (AttackUpgradeSystem.Instance != null)
+        {
+            bool isBuff = GameManager.Instance != null && SelectedAttack.type == GameManager.Instance.BuffedAttackType;
+            AttackUpgradeSystem.Instance.RegisterMeat(SelectedAttack.type, isBuff ? 2 : 1, false);
+        }
+
         return total;
     }
 
@@ -118,6 +131,24 @@ public class AttackSystem : MonoBehaviour
     public void FireAttackRolledEvent(int total, int[] individuals)
     {
         OnAttackRolled?.Invoke(total, individuals);
+    }
+
+    /// <summary>Returns +1 if the given attack type is this round's buffed type, 0 otherwise.
+    /// Call this from custom roll methods so the buff damage bonus is always applied.</summary>
+    public int GetBuffDamageBonus(AttackType type)
+    {
+        if (GameManager.Instance != null && type == GameManager.Instance.BuffedAttackType)
+            return 1;
+        return 0;
+    }
+
+    /// <summary>Grants XP to the given attack type for landing a hit.
+    /// 1 XP normally, 2 XP if this attack is the round's buffed type.</summary>
+    public void GrantHitXP(AttackType type)
+    {
+        if (AttackUpgradeSystem.Instance == null) return;
+        bool isBuff = GameManager.Instance != null && type == GameManager.Instance.BuffedAttackType;
+        AttackUpgradeSystem.Instance.RegisterMeat(type, isBuff ? 2 : 1, false);
     }
 
     // ── Internal ──────────────────────────────────────────────────────────────

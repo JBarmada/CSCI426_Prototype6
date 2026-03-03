@@ -41,12 +41,18 @@ public class AttackUpgradeSystem : MonoBehaviour
     /// Call when a meat piece of the given type is collected.
     /// Adds <paramref name="amount"/> to the corresponding AttackData and checks level thresholds.
     /// </summary>
-    public void RegisterMeat(AttackType type, int amount)
+    /// <param name="applyBuffMultiplier">When true (default), buffed attacks receive 50% bonus XP.
+    /// Set to false when the caller already accounts for the buff (e.g. hit XP).</param>
+    public void RegisterMeat(AttackType type, int amount, bool applyBuffMultiplier = true)
     {
         if (AttackSystem.Instance == null) return;
 
         AttackData data = AttackSystem.Instance.GetAttack(type);
         if (data == null) return;
+
+        // Buffed attack receives 50% bonus XP on kill-sourced meat
+        if (applyBuffMultiplier && GameManager.Instance != null && type == GameManager.Instance.BuffedAttackType)
+            amount = Mathf.CeilToInt(amount * 1.5f);
 
         data.meatCollected += amount;
 

@@ -16,6 +16,9 @@ public class AttackSlotUI : MonoBehaviour
     [SerializeField] private Color selectedColor   = Color.yellow;
     [SerializeField] private Color deselectedColor = new Color(1f, 1f, 1f, 0f);
 
+    private Color _defaultNameColor = Color.white;
+    private static readonly Color BuffedColor = new Color(0.2f, 1f, 0.2f, 1f); // bright green
+
     /// <summary>Exposes the configured attack type so AttackBarUI can route events correctly.</summary>
     public AttackType AttackType => attackType;
 
@@ -26,6 +29,8 @@ public class AttackSlotUI : MonoBehaviour
         // Default to deselected in Awake so AttackBarUI.Start() can override correctly.
         SetSelected(false);
         RefreshLevel(1);
+        if (nameText != null)
+            _defaultNameColor = nameText.color;
     }
 
     private void Start()
@@ -49,5 +54,12 @@ public class AttackSlotUI : MonoBehaviour
     {
         if (levelText != null)
             levelText.text = $"LVL. {level}";
+    }
+
+    /// <summary>Tints the attack name green to indicate it is buffed this round.</summary>
+    public void SetBuffed(bool buffed)
+    {
+        if (nameText != null)
+            nameText.color = buffed ? BuffedColor : _defaultNameColor;
     }
 }

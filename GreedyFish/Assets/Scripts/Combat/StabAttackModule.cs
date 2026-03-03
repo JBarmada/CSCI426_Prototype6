@@ -120,16 +120,19 @@ public class StabAttackModule : PlayerAttackModuleBase
         AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Stab);
         if (atkData == null) return 0;
 
+        int buffBonus = AttackSystem.Instance.GetBuffDamageBonus(AttackType.Stab);
+
         // Stab uses d4 dice
         int total = DiceRoller.Roll(
             atkData.diceCount,
             4,
-            atkData.flatBonus,
+            atkData.flatBonus + buffBonus,
             out int[] individuals
         );
 
         AttackSystem.Instance.game.AddScore(total);
         AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
+        AttackSystem.Instance.GrantHitXP(AttackType.Stab);
         return total;
     }
 

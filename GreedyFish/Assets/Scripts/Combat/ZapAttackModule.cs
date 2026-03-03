@@ -52,15 +52,18 @@ public class ZapAttackModule : PlayerAttackModuleBase
         AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Zap);
         if (atkData == null) return 0;
 
+        int buffBonus = AttackSystem.Instance.GetBuffDamageBonus(AttackType.Zap);
+
         int total = DiceRoller.Roll(
             atkData.diceCount,
             diceSides,
-            atkData.flatBonus,
+            atkData.flatBonus + buffBonus,
             out int[] individuals
         );
 
         AttackSystem.Instance.game.AddScore(total);
         AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
+        AttackSystem.Instance.GrantHitXP(AttackType.Zap);
         return total;
     }
 
