@@ -8,6 +8,8 @@ TagManager:
   - JawFish
   - EelFish
   - UglyFish
+  - FxTemporaire
+  - Food
   layers:
   - Default
   - TransparentFX

@@ -124,6 +124,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 30
+  spawner: {fileID: 0}
+  projectilePrefabs:
+  - {fileID: 4972674618258455923, guid: b07f83b84f66b4b5fa6d3ebae8a204fc, type: 3}
+  spawnInterval: 1
+  groupSize: 1
 --- !u!114 &3782053298359397233
 MonoBehaviour:
   m_ObjectHideFlags: 0

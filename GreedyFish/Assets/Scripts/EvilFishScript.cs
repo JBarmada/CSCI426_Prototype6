@@ -12,6 +12,12 @@ public class EvilFishScript : MonoBehaviour
     private float _stunRemaining;
 
     public bool IsStunned => _stunRemaining > 0f;
+
+     private Vector2 movement;
+   
+    //0 is left, 1 is right;
+    public int direction = 0;
+    public int oldDirection = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,6 +28,54 @@ public class EvilFishScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (movement.x < 0)
+        {
+            oldDirection = direction;
+            direction = 0;
+         
+            
+        }
+        else if (movement.x > 0)
+        {
+            oldDirection = direction;
+            direction = 1;
+           
+            
+        }
+
+        if (oldDirection != direction)
+        {
+            //flip image
+           /* if (oldDirection == 1)
+            {
+                Vector3 dir = new Vector3(-1, 1, 1);
+                  
+                
+                
+
+            }
+            else
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+
+
+
+            }*/
+            
+        }
+        
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
+        movement.Normalize();
+
+
+
+
+
+
+
+
+
         if (_stunRemaining > 0f)
         {
             _stunRemaining -= Time.deltaTime;

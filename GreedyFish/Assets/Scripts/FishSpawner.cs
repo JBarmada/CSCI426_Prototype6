@@ -11,25 +11,50 @@ public class FishSpawner : MonoBehaviour
     [SerializeField] private float spawnInterval = 1.0f;
     [Tooltip("Number of fish to spawn per group")]
     [SerializeField] private int groupSize = 1;
+    public int deadCount = 0;
+    public int spawnCount = 0;
 
     void Start()
     {
         StartCoroutine(SpawnProj());
     }
-
+    void Update()
+    {
+        if ((spawnCount == deadCount) && (spawnCount != 0))
+        {
+            spawnCount = 0;
+            deadCount = 0;
+            StartCoroutine(SpawnProj());
+            
+        }
+    }
     private IEnumerator SpawnProj()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(spawnInterval);
 
+        yield return new WaitForSeconds(spawnInterval);
+        int randProj = Random.Range(0, projectilePrefabs.Length);
+        int randSpawPoint = Random.Range(0, spawnPoints.Length);
+
+        if (randProj == 1)
+        {
+
+            Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
+            StopCoroutine(SpawnProj());
+            spawnCount++;
+
+        }
+        else
+        {
             for (int i = 0; i < groupSize; i++)
             {
-                int randProj = Random.Range(0, projectilePrefabs.Length);
-                int randSpawPoint = Random.Range(0, spawnPoints.Length);
                 Instantiate(projectilePrefabs[randProj], spawnPoints[randSpawPoint].position, transform.rotation);
+                spawnCount++;
             }
+            StopCoroutine(SpawnProj());
+
         }
+
+
     }
 }
 

@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
 
     public int MaxHealth     => maxHealth;
-    public int CurrentHealth { get; private set; }
+    public int CurrentHealth { get; set; }
     public float HealthPercent => maxHealth > 0 ? (float)CurrentHealth / maxHealth : 0f;
     public bool IsDead => CurrentHealth <= 0;
 
@@ -36,6 +36,29 @@ public class PlayerHealth : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("PiercingFish"))
+        {
+            TakeDamage(5);
+
+        }
+        else if (collision.gameObject.CompareTag("EelFish"))
+        {
+            TakeDamage(10);
+
+        }
+        else if (collision.gameObject.CompareTag("UglyFish"))
+        {
+            TakeDamage(5);
+
+        }
+        else if (collision.gameObject.CompareTag("JawFish"))
+        {
+            TakeDamage(15);
+
+        }
+    }
     // ── Public API ────────────────────────────────────────────────────────────
 
     /// <summary>Deals damage to the player. Triggers death and GameOver when HP hits zero.</summary>
