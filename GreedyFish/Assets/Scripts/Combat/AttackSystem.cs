@@ -114,6 +114,12 @@ public class AttackSystem : MonoBehaviour
         return DiceRoller.Roll(meatDropDiceCount, meatDropDiceSides, meatDropFlatBonus, out _);
     }
 
+    /// <summary>Public method to fire the OnAttackRolled event from external attack modules.</summary>
+    public void FireAttackRolledEvent(int total, int[] individuals)
+    {
+        OnAttackRolled?.Invoke(total, individuals);
+    }
+
     // ── Internal ──────────────────────────────────────────────────────────────
 
     private void TickCooldowns()

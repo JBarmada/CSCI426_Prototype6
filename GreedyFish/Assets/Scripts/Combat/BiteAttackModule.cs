@@ -13,10 +13,12 @@ public class BiteAttackModule : PlayerAttackModuleBase
     [Header("Bite Special")]
     [SerializeField] private float specialRadius = 3f;
     [SerializeField] private float specialIndicatorDuration = 0.2f;
+    [SerializeField] private float specialCooldown = 5f;
 
     [Header("Visuals")]
     [SerializeField] private SpriteRenderer biteSprite;
     [SerializeField] private SpriteRenderer zoneIndicator;
+    [SerializeField] private GameObject jawStormParticlePrefab;
 
     [Header("Audio")]
     [SerializeField] private string biteSoundClipName = "BiteAttack";
@@ -29,6 +31,11 @@ public class BiteAttackModule : PlayerAttackModuleBase
     protected override void Awake()
     {
         base.Awake();
+
+        // Set the special cooldown duration on the attack data
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Bite);
+        if (atkData != null)
+            atkData.specialMoveCooldown = specialCooldown;
 
         if (zoneIndicator != null)
         {
@@ -67,6 +74,11 @@ public class BiteAttackModule : PlayerAttackModuleBase
 
     public override void ExecuteSpecial()
     {
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Bite);
+        if (atkData == null || atkData.specialCooldownRemaining > 0)
+            return;
+
+        atkData.specialCooldownRemaining = specialCooldown;
         StartCoroutine(DoBiteSpecial());
     }
 
@@ -81,6 +93,24 @@ public class BiteAttackModule : PlayerAttackModuleBase
         zoneIndicator.enabled = true;
     }
 
+    private int RollSpecialDamage()
+    {
+        AttackData atkData = AttackSystem.Instance?.GetAttack(AttackType.Bite);
+        if (atkData == null) return 0;
+
+        // Roll with d12 (12-sided dice) instead of normal d6
+        int total = DiceRoller.Roll(
+            atkData.diceCount,
+            12,
+            atkData.flatBonus,
+            out int[] individuals
+        );
+
+        AttackSystem.Instance.game.AddScore(total);
+        AttackSystem.Instance.FireAttackRolledEvent(total, individuals);
+        return total;
+    }
+
     private IEnumerator DoBiteNormal()
     {
         Vector2 signedOffset = GetFacingOffset(biteOffset);
@@ -90,7 +120,8 @@ public class BiteAttackModule : PlayerAttackModuleBase
 
         if (biteSprite != null)
         {
-            biteSprite.transform.localPosition = new Vector3(signedOffset.x, signedOffset.y, biteSprite.transform.localPosition.z);
+            // Use original offset for localPosition - parent scale handles the flip
+            biteSprite.transform.localPosition = new Vector3(biteOffset.x, biteOffset.y, biteSprite.transform.localPosition.z);
             biteSprite.gameObject.SetActive(true);
         }
 
@@ -120,9 +151,20 @@ public class BiteAttackModule : PlayerAttackModuleBase
         if (biteSprite != null)
             biteSprite.gameObject.SetActive(true);
 
+        // Spawn particle effect
+        if (jawStormParticlePrefab != null)
+        {
+            GameObject particleInstance = Instantiate(jawStormParticlePrefab, transform.position, Quaternion.identity);
+            ParticleSystem ps = particleInstance.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                ps.Play();
+            }
+        }
+
         AudioManager.Instance?.Play(specialSoundClipName);
 
-        int damage = RollDamage();
+        int damage = RollSpecialDamage();
         int count = Physics2D.OverlapCircle(center, specialRadius, enemyFilter, HitBuffer);
 
         for (int i = 0; i < count; i++)
