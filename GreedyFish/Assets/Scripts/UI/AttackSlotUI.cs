@@ -21,14 +21,18 @@ public class AttackSlotUI : MonoBehaviour
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
+    private void Awake()
+    {
+        // Default to deselected in Awake so AttackBarUI.Start() can override correctly.
+        SetSelected(false);
+        RefreshLevel(1);
+    }
+
     private void Start()
     {
         Button btn = GetComponent<Button>();
         if (btn != null)
             btn.onClick.AddListener(() => AttackSystem.Instance?.SelectAttack(attackType));
-
-        SetSelected(false);
-        RefreshLevel(1);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────

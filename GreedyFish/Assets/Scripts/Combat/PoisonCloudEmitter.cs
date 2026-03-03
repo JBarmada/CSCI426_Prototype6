@@ -1,92 +1,85 @@
 using UnityEngine;
 
+/// <summary>
+/// Spawned at a poisoned enemy's position during Poison Special.
+/// Periodically checks for enemies in radius and applies/refreshes poison stacks.
+/// The spawning code handles GO cleanup via timed Destroy.
+/// </summary>
 public class PoisonCloudEmitter : MonoBehaviour
 {
-    private LayerMask enemyLayer = ~0;
-    private ContactFilter2D enemyFilter;
-    private float cloudRadius = 1.5f;
-    private float tickInterval = 0.5f;
-    private int tickDamage = 1;
+    private ContactFilter2D _enemyFilter;
+    private float _cloudRadius = 1.5f;
+    private float _tickInterval = 0.5f;
+    private int _stacksToApply = 1;
+    private float _stackDuration;
+    private float _damagePerTick;
+    private float _tick1, _tick2, _tick3;
 
-    private float remainingDuration;
-    private float tickTimer;
-    private GameObject owner;
+    private float _remainingDuration;
+    private float _tickTimer;
 
-    private static readonly Collider2D[] HitBuffer = new Collider2D[30];
+    private static readonly Collider2D[] CloudHitBuffer = new Collider2D[30];
 
-    private void Awake()
+    public void Configure(LayerMask layer, float radius, float tickInterval,
+        int stacksToApply, float stackDuration, float damagePerTick,
+        float tick1, float tick2, float tick3)
     {
-        enemyFilter = new ContactFilter2D();
-        enemyFilter.useLayerMask = true;
-        enemyFilter.useTriggers = true;
-        enemyFilter.layerMask = enemyLayer;
+        _cloudRadius = Mathf.Max(0.1f, radius);
+        _tickInterval = Mathf.Max(0.05f, tickInterval);
+        _stacksToApply = Mathf.Clamp(stacksToApply, 1, PoisonStatus.MaxStacks);
+        _stackDuration = stackDuration;
+        _damagePerTick = damagePerTick;
+        _tick1 = tick1; _tick2 = tick2; _tick3 = tick3;
+
+        _enemyFilter = new ContactFilter2D();
+        _enemyFilter.useLayerMask = true;
+        _enemyFilter.useTriggers = true;
+        _enemyFilter.layerMask = layer;
+    }
+
+    public void Activate(float duration)
+    {
+        _remainingDuration = duration;
+        _tickTimer = 0f; // Tick immediately on first frame
     }
 
     private void Update()
     {
-        if (remainingDuration <= 0f)
+        if (_remainingDuration <= 0f)
+        {
+            enabled = false; // Stop ticking; timed Destroy handles cleanup
             return;
+        }
 
-        remainingDuration -= Time.deltaTime;
-        tickTimer -= Time.deltaTime;
+        _remainingDuration -= Time.deltaTime;
+        _tickTimer -= Time.deltaTime;
 
-        if (tickTimer > 0f)
-            return;
-
-        tickTimer = tickInterval;
-        EmitTickDamage();
+        if (_tickTimer <= 0f)
+        {
+            _tickTimer = _tickInterval;
+            SpreadPoison();
+        }
     }
 
-    public void Configure(LayerMask layer, float radius, float interval, int damage)
+    private void SpreadPoison()
     {
-        enemyLayer = layer;
-        cloudRadius = Mathf.Max(0.1f, radius);
-        tickInterval = Mathf.Max(0.05f, interval);
-        tickDamage = Mathf.Max(1, damage);
-
-        enemyFilter.useLayerMask = true;
-        enemyFilter.useTriggers = true;
-        enemyFilter.layerMask = enemyLayer;
-    }
-
-    public void Activate(float duration, GameObject cloudOwner)
-    {
-        owner = cloudOwner;
-        remainingDuration = Mathf.Max(remainingDuration, duration);
-        if (tickTimer <= 0f)
-            tickTimer = tickInterval;
-    }
-
-    private void EmitTickDamage()
-    {
-        int count = Physics2D.OverlapCircle(transform.position, cloudRadius, enemyFilter, HitBuffer);
+        int count = Physics2D.OverlapCircle(transform.position, _cloudRadius, _enemyFilter, CloudHitBuffer);
 
         for (int i = 0; i < count; i++)
         {
-            Collider2D hit = HitBuffer[i];
-            if (hit == null)
-                continue;
-
-            GameObject hitObject = hit.gameObject;
-            if (owner != null && hitObject == owner)
-                continue;
+            Collider2D hit = CloudHitBuffer[i];
+            if (hit == null) continue;
 
             EnemyHealth enemy = hit.GetComponent<EnemyHealth>();
-            if (enemy == null || enemy.IsDead)
-                continue;
+            if (enemy == null || enemy.IsDead) continue;
 
-            bool wasAlive = !enemy.IsDead;
-            enemy.TakeDamage(tickDamage);
+            PoisonStatus status = hit.GetComponent<PoisonStatus>();
+            if (status == null)
+                status = hit.gameObject.AddComponent<PoisonStatus>();
 
-            if (wasAlive && enemy.IsDead)
-            {
-                AttackType? type = PlayerScript.GetEnemyAttackType(hit.tag);
-                if (type.HasValue)
-                {
-                    int meatCount = AttackSystem.Instance?.RollMeatDrop() ?? 1;
-                    AttackUpgradeSystem.Instance?.RegisterMeat(type.Value, meatCount);
-                }
-            }
+            // Cloud applies stacks with refresh
+            status.ApplyStacksWithRefresh(_stacksToApply, _stackDuration, _damagePerTick,
+                _tick1, _tick2, _tick3);
         }
     }
 }

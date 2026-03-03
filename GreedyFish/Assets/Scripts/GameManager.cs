@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public enum GameState { MainMenu, Playing, Paused, GameOver }
+
+public enum ScoreCategory { AttackDamage, EnemyKill }
 
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +24,12 @@ public class GameManager : MonoBehaviour
     public event Action<GameState> OnStateChanged;
     public event Action<float> OnTimerTick;
     public event Action<int> OnScoreChanged;
+
+    // ── Score breakdown ───────────────────────────────────────────────────────
+    private Dictionary<ScoreCategory, int> _scoreBreakdown = new Dictionary<ScoreCategory, int>();
+
+    /// <summary>Returns a copy of the score breakdown for the current round.</summary>
+    public Dictionary<ScoreCategory, int> GetScoreBreakdown() => new Dictionary<ScoreCategory, int>(_scoreBreakdown);
     
 
     private void Awake()
@@ -63,6 +72,9 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         CurrentScore = 0;
+        _scoreBreakdown.Clear();
+        foreach (ScoreCategory cat in Enum.GetValues(typeof(ScoreCategory)))
+            _scoreBreakdown[cat] = 0;
         TimeRemaining = gameDuration;
         PlayerSurvived = false;
         OnScoreChanged?.Invoke(CurrentScore);
@@ -124,13 +136,19 @@ public class GameManager : MonoBehaviour
 
     // ── Score ─────────────────────────────────────────────────────────────────
 
-    /// <summary>Adds points to the current score. Call when the player eats meat.</summary>
-    public void AddScore(int amount)
+    /// <summary>Adds points to the current score with a category for breakdown tracking.</summary>
+    public void AddScore(int amount, ScoreCategory category = ScoreCategory.AttackDamage)
     {
         if (CurrentState != GameState.Playing)
             return;
 
         CurrentScore += amount;
+
+        if (_scoreBreakdown.ContainsKey(category))
+            _scoreBreakdown[category] += amount;
+        else
+            _scoreBreakdown[category] = amount;
+
         OnScoreChanged?.Invoke(CurrentScore);
     }
 

@@ -51,7 +51,7 @@ public class EnemyHealth : MonoBehaviour
         {
             //if (this.CompareTag("EelFish"))
             //{
-            game.AddScore(4);
+            game.AddScore(4, ScoreCategory.EnemyKill);
             groupSize = 1;
             StartCoroutine(SpawnProj());
             

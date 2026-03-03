@@ -22,6 +22,7 @@ public class MenuManager : MonoBehaviour
     private TextMeshProUGUI controlsText;
     private TextMeshProUGUI finalScoreText;
     private TextMeshProUGUI resultText;
+    private TextMeshProUGUI breakdownText;
 
     private const string ControlsContent =
         "Move:  WASD / Arrow Keys\n" +
@@ -98,6 +99,7 @@ public class MenuManager : MonoBehaviour
             RefreshHighScores();
             WireButton(startMenuPanel, "StartButton", OnStartPressed);
             WireButton(startMenuPanel, "QuitButton",  OnQuitPressed);
+            WireButton(startMenuPanel, "ResetScoresButton", OnResetScoresPressed);
         }
 
         if (pauseMenuPanel != null)
@@ -111,6 +113,7 @@ public class MenuManager : MonoBehaviour
         {
             finalScoreText = FindText(endMenuPanel, "FinalScoreText");
             resultText     = FindText(endMenuPanel, "ResultText");
+            breakdownText  = FindText(endMenuPanel, "BreakdownText");
             WireButton(endMenuPanel, "RetryButton", OnResetPressed);
             WireButton(endMenuPanel, "QuitButton",  OnQuitPressed);
         }
@@ -164,6 +167,16 @@ public class MenuManager : MonoBehaviour
     /// <summary>Called by any Quit button.</summary>
     public void OnQuitPressed()      => GameManager.Instance.QuitGame();
 
+    /// <summary>Called by ResetScores button on start menu.</summary>
+    public void OnResetScoresPressed()
+    {
+        if (HighScoreManager.Instance != null)
+        {
+            HighScoreManager.Instance.ClearScores();
+            RefreshHighScores();
+        }
+    }
+
     // ── Internal ──────────────────────────────────────────────────────────────
 
     private void PopulateEndMenu()
@@ -176,6 +189,26 @@ public class MenuManager : MonoBehaviour
 
         if (resultText != null)
             resultText.text = GameManager.Instance.PlayerSurvived ? "You Survived!" : "You Were Eaten...";
+
+        if (breakdownText != null)
+        {
+            var breakdown = GameManager.Instance.GetScoreBreakdown();
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("── Score Breakdown ──");
+
+            foreach (var pair in breakdown)
+            {
+                string label = pair.Key switch
+                {
+                    ScoreCategory.AttackDamage => "Attack Damage",
+                    ScoreCategory.EnemyKill   => "Enemy Kills",
+                    _                         => pair.Key.ToString()
+                };
+                sb.AppendLine($"{label}: {pair.Value}");
+            }
+
+            breakdownText.text = sb.ToString();
+        }
     }
 
     private void RefreshHighScores()

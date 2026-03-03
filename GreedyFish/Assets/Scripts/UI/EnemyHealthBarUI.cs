@@ -30,8 +30,10 @@ public class EnemyHealthBarUI : MonoBehaviour
     private SpriteRenderer _backgroundRenderer;
     private SpriteRenderer _fillRenderer;
     private Transform      _fillTransform;
+    private bool           _poisonTintActive;
 
     private static Sprite _sharedSquare;
+    private static readonly Color PoisonBarTint = new Color(0.55f, 0.15f, 0.7f, 1f);
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -111,8 +113,17 @@ public class EnemyHealthBarUI : MonoBehaviour
         fillPos.x       = -barWidth / 2f + fillWidth / 2f;
         _fillTransform.localPosition = fillPos;
 
-        // Green → yellow → red colour transition.
-        _fillRenderer.color = Color.Lerp(emptyColor, fullColor, percent);
+        // Green → yellow → red colour transition, with optional poison tint.
+        Color baseColor = Color.Lerp(emptyColor, fullColor, percent);
+        _fillRenderer.color = _poisonTintActive ? Color.Lerp(baseColor, PoisonBarTint, 0.7f) : baseColor;
+    }
+
+    /// <summary>Applies or removes the dark purple poison tint on the health bar fill.</summary>
+    public void SetPoisonTint(bool active)
+    {
+        _poisonTintActive = active;
+        if (_enemyHealth != null)
+            HandleHealthChanged(_enemyHealth.CurrentHealth, _enemyHealth.MaxHealth);
     }
 
     /// <summary>Lazily creates a shared 1×1 white square sprite used by all health bars.</summary>

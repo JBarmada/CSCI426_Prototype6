@@ -61,6 +61,13 @@ public class HighScoreManager : MonoBehaviour
         return data.entries.GetRange(0, take);
     }
 
+    /// <summary>Deletes all saved high scores from memory and disk.</summary>
+    public void ClearScores()
+    {
+        data.entries.Clear();
+        WriteToDisk();
+    }
+
     // ── Persistence ───────────────────────────────────────────────────────────
 
     private void LoadFromDisk()

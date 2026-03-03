@@ -28,6 +28,8 @@ public class StabAttackModule : PlayerAttackModuleBase
     [Header("Audio")]
     [SerializeField] private string attackSoundClipName = "SpecialAttack";
 
+    private bool _attackActive;
+
     public override AttackType AttackType => AttackType.Stab;
 
     protected override void Awake()
@@ -61,7 +63,7 @@ public class StabAttackModule : PlayerAttackModuleBase
             UpdateDebugZoneIndicator(stabOffset, stabBoxSize);
             UpdateDebugSpecialZoneIndicator();
         }
-        else
+        else if (!_attackActive)
         {
             if (zoneIndicator != null) zoneIndicator.enabled = false;
             if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
@@ -133,6 +135,7 @@ public class StabAttackModule : PlayerAttackModuleBase
 
     private IEnumerator DoNormalStab()
     {
+        _attackActive = true;
         Vector2 signedOffset = GetFacingOffset(stabOffset);
         Vector2 center = (Vector2)transform.position + signedOffset;
 
@@ -171,6 +174,7 @@ public class StabAttackModule : PlayerAttackModuleBase
 
         yield return new WaitForSeconds(indicatorDuration);
 
+        _attackActive = false;
         if (!debugMode)
         {
             if (zoneIndicator != null) zoneIndicator.enabled = false;
@@ -180,6 +184,7 @@ public class StabAttackModule : PlayerAttackModuleBase
 
     private IEnumerator DoSpecial()
     {
+        _attackActive = true;
         Vector2 signedOffset = GetFacingOffset(specialOffset);
         Vector2 baseCenter = (Vector2)transform.position + signedOffset;
 
@@ -249,6 +254,7 @@ public class StabAttackModule : PlayerAttackModuleBase
 
         yield return new WaitForSeconds(specialIndicatorDuration);
 
+        _attackActive = false;
         if (!debugMode)
         {
             if (zoneIndicator != null) zoneIndicator.enabled = false;
