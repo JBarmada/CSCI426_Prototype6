@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 937600774224947565}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.0763, y: 1.7708, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5248, y: 1.5248, z: 1.5248}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -72,7 +72,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.26390302, y: -0.28903168}
+  m_Offset: {x: 0.010932893, y: -0.061997563}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -82,7 +82,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7611921, y: 0.5506948}
+  m_Size: {x: 0.59084576, y: 0.40031457}
   m_EdgeRadius: 0
 --- !u!50 &5060131431055152755
 Rigidbody2D:
@@ -125,6 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 30
   spawner: {fileID: 0}
+  game: {fileID: 0}
   projectilePrefabs:
   - {fileID: 4972674618258455923, guid: b07f83b84f66b4b5fa6d3ebae8a204fc, type: 3}
   spawnInterval: 1
@@ -144,6 +145,8 @@ MonoBehaviour:
   player: {fileID: 5845821989787301426, guid: 57e2294ae78d0d54b8c62931523f2e12, type: 3}
   speed: 2
   distance: 1
+  direction: 0
+  oldDirection: 0
 --- !u!114 &4569281029069474602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +188,7 @@ Transform:
   m_GameObject: {fileID: 6469372047623370821}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.349, y: 0.029, z: 0}
+  m_LocalPosition: {x: 0, y: 0.111, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -205,7 +208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBarUI
   barWidth: 0.4
   barHeight: 0.1
-  yOffset: 0.05
+  yOffset: 0.12
   fullColor: {r: 0.18, g: 0.8, b: 0.18, a: 1}
   emptyColor: {r: 0.9, g: 0.1, b: 0.1, a: 1}
   backgroundColor: {r: 0.1, g: 0.1, b: 0.1, a: 0.8}
@@ -294,7 +297,7 @@ Transform:
   m_GameObject: {fileID: 8969112736100588488}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3013, y: -0.3013, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.8831, y: 2.8831, z: 2.8831}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -347,7 +350,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 7f693c6fbc46f4747a546f7368862469, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
