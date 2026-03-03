@@ -14,6 +14,12 @@ public class AudioManager : MonoBehaviour
     [Header("Volume")]
     [SerializeField] [Range(0f, 1f)] private float masterVolume = 1f;
 
+    [Header("Music")]
+    [SerializeField] private AudioClip musicClip;
+    [SerializeField] [Range(0f, 1f)] private float musicVolume = 0.4f;
+    [SerializeField] private bool playMusicOnStart = true;
+
+    private AudioSource musicSource;
     private readonly List<AudioSource> pool = new List<AudioSource>();
     private readonly Dictionary<string, AudioClip> clipLookup = new Dictionary<string, AudioClip>();
 
@@ -30,6 +36,13 @@ public class AudioManager : MonoBehaviour
 
         BuildLookup();
         BuildPool();
+        BuildMusicSource();
+    }
+
+    private void Start()
+    {
+        if (playMusicOnStart && musicClip != null)
+            PlayMusic(musicClip.name);
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -68,6 +81,32 @@ public class AudioManager : MonoBehaviour
         masterVolume = Mathf.Clamp01(volume);
     }
 
+    /// <summary>Plays a named clip as looping background music. Replaces any current track.</summary>
+    public void PlayMusic(string clipName)
+    {
+        if (musicSource == null || !TryGetClip(clipName, out AudioClip clip))
+            return;
+
+        musicSource.clip = clip;
+        musicSource.volume = musicVolume;
+        musicSource.Play();
+    }
+
+    /// <summary>Stops the background music.</summary>
+    public void StopMusic()
+    {
+        if (musicSource != null)
+            musicSource.Stop();
+    }
+
+    /// <summary>Sets the music volume independently from SFX. Range 0–1.</summary>
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        if (musicSource != null)
+            musicSource.volume = musicVolume;
+    }
+
     // ── Internal ──────────────────────────────────────────────────────────────
 
     private void BuildLookup()
@@ -96,6 +135,17 @@ public class AudioManager : MonoBehaviour
             source.playOnAwake = false;
             pool.Add(source);
         }
+    }
+
+    private void BuildMusicSource()
+    {
+        var child = new GameObject("MusicSource");
+        child.transform.SetParent(transform);
+        musicSource = child.AddComponent<AudioSource>();
+        musicSource.playOnAwake = false;
+        musicSource.loop = true;
+        musicSource.spatialBlend = 0f;
+        musicSource.volume = musicVolume;
     }
 
     private AudioSource GetFreeSource()
