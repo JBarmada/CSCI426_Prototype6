@@ -18,6 +18,7 @@ public class BiteAttackModule : PlayerAttackModuleBase
     [Header("Visuals")]
     [SerializeField] private SpriteRenderer biteSprite;
     [SerializeField] private SpriteRenderer zoneIndicator;
+    [SerializeField] private SpriteRenderer specialZoneIndicator;
     [SerializeField] private GameObject jawStormParticlePrefab;
 
     [Header("Audio")]
@@ -37,17 +38,15 @@ public class BiteAttackModule : PlayerAttackModuleBase
         if (atkData != null)
             atkData.specialMoveCooldown = specialCooldown;
 
-        if (zoneIndicator != null)
+        if (debugMode)
         {
-            if (debugMode)
-            {
-                // Show normal bite zone permanently in debug mode
-                UpdateDebugZoneIndicator(biteOffset, biteBoxSize);
-            }
-            else
-            {
-                zoneIndicator.enabled = false;
-            }
+            UpdateDebugZoneIndicator(biteOffset, biteBoxSize);
+            UpdateDebugSpecialZoneIndicator();
+        }
+        else
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
         }
     }
 
@@ -56,10 +55,12 @@ public class BiteAttackModule : PlayerAttackModuleBase
         if (debugMode)
         {
             UpdateDebugZoneIndicator(biteOffset, biteBoxSize);
+            UpdateDebugSpecialZoneIndicator();
         }
-        else if (zoneIndicator != null)
+        else
         {
-            zoneIndicator.enabled = false;
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
         }
     }
 
@@ -91,6 +92,20 @@ public class BiteAttackModule : PlayerAttackModuleBase
         zoneIndicator.transform.localPosition = new Vector3(signedOffset.x, signedOffset.y, zoneIndicator.transform.localPosition.z);
         zoneIndicator.transform.localScale = new Vector3(size.x, size.y, 1f);
         zoneIndicator.enabled = true;
+    }
+
+    /// <summary>
+    /// Shows the special (Jaw Storm) attack range permanently in debug mode.
+    /// The special is a circle centered on the player, so offset is zero and size is diameter.
+    /// </summary>
+    private void UpdateDebugSpecialZoneIndicator()
+    {
+        if (!debugMode || specialZoneIndicator == null)
+            return;
+
+        specialZoneIndicator.transform.localPosition = new Vector3(0f, 0f, specialZoneIndicator.transform.localPosition.z);
+        specialZoneIndicator.transform.localScale = new Vector3(specialRadius * 2f, specialRadius * 2f, 1f);
+        specialZoneIndicator.enabled = true;
     }
 
     private int RollSpecialDamage()
@@ -138,8 +153,11 @@ public class BiteAttackModule : PlayerAttackModuleBase
         if (biteSprite != null)
             biteSprite.gameObject.SetActive(false);
 
-        if (!debugMode && zoneIndicator != null)
-            zoneIndicator.enabled = false;
+        if (!debugMode)
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
     }
 
     private IEnumerator DoBiteSpecial()
@@ -175,7 +193,10 @@ public class BiteAttackModule : PlayerAttackModuleBase
         if (biteSprite != null)
             biteSprite.gameObject.SetActive(false);
 
-        if (!debugMode && zoneIndicator != null)
-            zoneIndicator.enabled = false;
+        if (!debugMode)
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
     }
 }

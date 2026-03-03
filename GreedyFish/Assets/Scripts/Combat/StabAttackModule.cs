@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class StabAttackModule : PlayerAttackModuleBase
 {
     [Header("Normal Stab")]
@@ -21,6 +22,7 @@ public class StabAttackModule : PlayerAttackModuleBase
     [Header("Visuals")]
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private SpriteRenderer zoneIndicator;
+    [SerializeField] private SpriteRenderer specialZoneIndicator;
     [SerializeField] private GameObject specialParticleEffectPrefab;
 
     [Header("Audio")]
@@ -40,8 +42,30 @@ public class StabAttackModule : PlayerAttackModuleBase
             atkData.diceSides = 4; // Stab uses d4 instead of d6
         }
 
-        if (zoneIndicator != null)
-            zoneIndicator.enabled = false;
+        if (debugMode)
+        {
+            UpdateDebugZoneIndicator(stabOffset, stabBoxSize);
+            UpdateDebugSpecialZoneIndicator();
+        }
+        else
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (debugMode)
+        {
+            UpdateDebugZoneIndicator(stabOffset, stabBoxSize);
+            UpdateDebugSpecialZoneIndicator();
+        }
+        else
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
     }
 
     public override void ExecuteNormal(GameObject primaryTarget)
@@ -57,6 +81,36 @@ public class StabAttackModule : PlayerAttackModuleBase
 
         atkData.specialCooldownRemaining = specialCooldown;
         StartCoroutine(DoSpecial());
+    }
+
+    /// <summary>
+    /// Updates the zone indicator to match the given offset/size in local space.
+    /// Uses negative offset.x because the sprite faces LEFT by default (mouth at -x).
+    /// The parent's scale flip (-1,1,1 when facing right) handles mirroring automatically.
+    /// </summary>
+    private void UpdateDebugZoneIndicator(Vector2 offset, Vector2 size)
+    {
+        if (!debugMode || zoneIndicator == null)
+            return;
+
+        zoneIndicator.transform.localPosition = new Vector3(-offset.x, offset.y, zoneIndicator.transform.localPosition.z);
+        zoneIndicator.transform.localScale = new Vector3(size.x, size.y, 1f);
+        zoneIndicator.enabled = true;
+    }
+
+    /// <summary>
+    /// Shows the special (trident) attack range permanently in debug mode.
+    /// Covers all 3 lanes so the total height includes lane spacing.
+    /// </summary>
+    private void UpdateDebugSpecialZoneIndicator()
+    {
+        if (!debugMode || specialZoneIndicator == null)
+            return;
+
+        float totalHeight = specialBoxSize.y + (tridentLaneSpacing * 2);
+        specialZoneIndicator.transform.localPosition = new Vector3(-specialOffset.x, specialOffset.y, specialZoneIndicator.transform.localPosition.z);
+        specialZoneIndicator.transform.localScale = new Vector3(specialBoxSize.x, totalHeight, 1f);
+        specialZoneIndicator.enabled = true;
     }
 
     private int RollStabDamage()
@@ -82,18 +136,19 @@ public class StabAttackModule : PlayerAttackModuleBase
         Vector2 signedOffset = GetFacingOffset(stabOffset);
         Vector2 center = (Vector2)transform.position + signedOffset;
 
-        // Show zone indicator - use original offset for localPosition
+        // Show zone indicator — negative x because mouth is at -x in local space;
+        // parent scale flip handles left/right automatically.
         if (zoneIndicator != null)
         {
-            zoneIndicator.transform.localPosition = new Vector3(stabOffset.x, stabOffset.y, zoneIndicator.transform.localPosition.z);
+            zoneIndicator.transform.localPosition = new Vector3(-stabOffset.x, stabOffset.y, zoneIndicator.transform.localPosition.z);
             zoneIndicator.transform.localScale = new Vector3(stabBoxSize.x, stabBoxSize.y, 1f);
             zoneIndicator.enabled = true;
         }
 
-        // Play hit effect at attack location
+        // Play hit effect at attack location (mouth side)
         if (hitEffect != null)
         {
-            hitEffect.transform.position = center;
+            hitEffect.transform.localPosition = new Vector3(-stabOffset.x, stabOffset.y, hitEffect.transform.localPosition.z);
             hitEffect.Play();
         }
 
@@ -116,8 +171,11 @@ public class StabAttackModule : PlayerAttackModuleBase
 
         yield return new WaitForSeconds(indicatorDuration);
 
-        if (zoneIndicator != null)
-            zoneIndicator.enabled = false;
+        if (!debugMode)
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
     }
 
     private IEnumerator DoSpecial()
@@ -125,18 +183,16 @@ public class StabAttackModule : PlayerAttackModuleBase
         Vector2 signedOffset = GetFacingOffset(specialOffset);
         Vector2 baseCenter = (Vector2)transform.position + signedOffset;
 
-        // Show zone indicators for all 3 trident lanes
+        // Show zone indicator covering all 3 trident lanes
         if (zoneIndicator != null)
         {
-            // Use original offset for localPosition
-            zoneIndicator.transform.localPosition = new Vector3(specialOffset.x, specialOffset.y, zoneIndicator.transform.localPosition.z);
-            // Make indicator large enough to show all 3 lanes
+            zoneIndicator.transform.localPosition = new Vector3(-specialOffset.x, specialOffset.y, zoneIndicator.transform.localPosition.z);
             float totalHeight = specialBoxSize.y + (tridentLaneSpacing * 2);
             zoneIndicator.transform.localScale = new Vector3(specialBoxSize.x, totalHeight, 1f);
             zoneIndicator.enabled = true;
         }
 
-        // Spawn particle effects for each lane
+        // Spawn particle effects for each lane (world-space — already correct)
         if (specialParticleEffectPrefab != null)
         {
             for (int lane = -1; lane <= 1; lane++)
@@ -158,10 +214,10 @@ public class StabAttackModule : PlayerAttackModuleBase
             }
         }
 
-        // Play hit effect at base attack location
+        // Play hit effect at attack location (mouth side)
         if (hitEffect != null)
         {
-            hitEffect.transform.position = baseCenter;
+            hitEffect.transform.localPosition = new Vector3(-specialOffset.x, specialOffset.y, hitEffect.transform.localPosition.z);
             hitEffect.Play();
         }
 
@@ -193,7 +249,10 @@ public class StabAttackModule : PlayerAttackModuleBase
 
         yield return new WaitForSeconds(specialIndicatorDuration);
 
-        if (zoneIndicator != null)
-            zoneIndicator.enabled = false;
+        if (!debugMode)
+        {
+            if (zoneIndicator != null) zoneIndicator.enabled = false;
+            if (specialZoneIndicator != null) specialZoneIndicator.enabled = false;
+        }
     }
 }
